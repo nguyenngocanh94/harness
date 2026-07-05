@@ -34,3 +34,9 @@ Return path: friction entries about kit templates (not repo domain) get ported t
 
 The patterns come from a live experiment whose bets are still open.
 The kit distributes the lab, not a proven doctrine — the README says so.
+
+## Addendum 2026-07-05 — single-command distribution
+
+`onboard.ts` is the one distributed file: it clones the kit into `~/.cache/harness-kit` (fast-forward on re-runs, cached copy when offline), then delegates to the clone's `init.ts`.
+Bootstrap and installer stay separate scripts so the install contract remains testable in isolation and the distributed file stays dumb.
+The placeholder `DEFAULT_REPO` fails loudly until the kit is published or `HARNESS_KIT_REPO`/`--repo` is provided — never a silent clone of a wrong default.

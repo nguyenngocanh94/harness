@@ -7,17 +7,23 @@ The kit splits onboarding along the judgment line:
 - **`init.ts` (deterministic)** copies the skeleton — never overwrites, stamps a version, and tells you the one next step.
 - **`/harness-onboard` (agent, judgment)** adapts the skeleton to the repo: verified commands, domain gates via a human interview, a reading map that points only at docs that exist, and a pillar handoff for what onboarding must not invent.
 
-## Usage
+## Usage — one command
+
+`onboard.ts` is the only file you need: it clones the kit into `~/.cache/harness-kit` on first run (fast-forwards it afterwards; offline falls back to the cache), then installs the skeleton from that fresh copy.
 
 ```bash
-# once
-git clone <this repo> ~/Workspace/harness-kit
+# after publishing the kit, from anywhere:
+curl -fsSL <raw-url>/onboard.ts | bun - /path/to/target-repo
 
-# per target repo
-bun ~/Workspace/harness-kit/init.ts /path/to/target-repo
+# equivalent, from a local clone:
+bun ~/Workspace/harness-kit/onboard.ts /path/to/target-repo
 ```
 
+Configure the kit's git URL once: edit `DEFAULT_REPO` in `onboard.ts` when publishing, or export `HARNESS_KIT_REPO` (a `--repo=<url>` flag also works). Until one of those is set, the script refuses loudly rather than cloning a wrong default.
+
 Then open the target repo in Claude Code and run `/harness-onboard`.
+
+`init.ts` remains the underlying installer — `onboard.ts` is bootstrap-only and never touches the target itself.
 
 ## What lands in a target
 
