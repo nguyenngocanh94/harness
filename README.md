@@ -7,21 +7,32 @@ The kit splits onboarding along the judgment line:
 - **`init.ts` (deterministic)** copies the skeleton — never overwrites, stamps a version, and tells you the one next step.
 - **`/harness-onboard` (agent, judgment)** adapts the skeleton to the repo: verified commands, domain gates via a human interview, a reading map that points only at docs that exist, and a pillar handoff for what onboarding must not invent.
 
-## Usage — one command
+## Install & onboard — one command
 
-`onboard.ts` is the only file you need: it clones the kit into `~/.cache/harness-kit` on first run (fast-forwards it afterwards; offline falls back to the cache), then installs the skeleton from that fresh copy.
+Requirements on any machine: `bun` and `git`. Then, from anywhere:
 
 ```bash
-# after publishing the kit, from anywhere:
-curl -fsSL <raw-url>/onboard.ts | bun - /path/to/target-repo
-
-# equivalent, from a local clone:
-bun ~/Workspace/harness-kit/onboard.ts /path/to/target-repo
+curl -fsSL https://raw.githubusercontent.com/nguyenngocanh94/harness/main/onboard.ts | bun - /path/to/target-repo
 ```
 
-Configure the kit's git URL once: edit `DEFAULT_REPO` in `onboard.ts` when publishing, or export `HARNESS_KIT_REPO` (a `--repo=<url>` flag also works). Until one of those is set, the script refuses loudly rather than cloning a wrong default.
+The first run clones the kit into `~/.cache/harness-kit`; later runs fast-forward it, so every machine installs the latest kit automatically (offline falls back to the cached copy). When it finishes, open the target repo in Claude Code and run `/harness-onboard` — the skeleton is installed, the adaptation happens there.
 
-Then open the target repo in Claude Code and run `/harness-onboard`.
+Convenience alias for your dotfiles:
+
+```bash
+alias onboard='curl -fsSL https://raw.githubusercontent.com/nguyenngocanh94/harness/main/onboard.ts | bun -'
+# then, inside any repo:
+onboard .
+```
+
+Equivalent from a local clone:
+
+```bash
+git clone https://github.com/nguyenngocanh94/harness.git
+bun harness/onboard.ts /path/to/target-repo
+```
+
+Overrides: `--repo=<git-url>` or `HARNESS_KIT_REPO` (fork/mirror), `--ref=<branch>`, `HARNESS_KIT_CACHE` (cache location), `--force` (onboard a non-git directory).
 
 `init.ts` remains the underlying installer — `onboard.ts` is bootstrap-only and never touches the target itself.
 

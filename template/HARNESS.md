@@ -1,6 +1,6 @@
 # The harness
 
-This repo runs a **harness**: repo patterns that make agent-driven development reliable, installed by [harness-kit](https://github.com/TODO/harness-kit) and adapted at onboarding.
+This repo runs a **harness**: repo patterns that make agent-driven development reliable, installed by [harness-kit](https://github.com/nguyenngocanh94/harness) and adapted at onboarding.
 This document is the harness's map: what we believe, what is installed, and what bets are running.
 Operational rules live in [`CLAUDE.md`](./CLAUDE.md) and are linked, never restated, here.
 Kit version: see `docs/harness/kit-version`; update by re-running the kit's `init.ts`.

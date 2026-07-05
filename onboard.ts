@@ -16,7 +16,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 
-const DEFAULT_REPO = "https://example.invalid/CHANGE-ME/harness-kit.git";
+const DEFAULT_REPO = "https://github.com/nguyenngocanh94/harness.git";
 const DEFAULT_CACHE = join(homedir(), ".cache", "harness-kit");
 
 export class OnboardError extends Error {}
@@ -89,11 +89,6 @@ export function parseArgs(
 }
 
 export function runOnboard(args: OnboardArgs): number {
-  if (args.repo === DEFAULT_REPO) {
-    throw new OnboardError(
-      "no kit repo configured — set HARNESS_KIT_REPO, pass --repo=<git-url>, or edit DEFAULT_REPO after publishing the kit",
-    );
-  }
   const kit = ensureKit(args.repo, args.ref, args.cacheDir);
   console.log(`[harness-kit] ${kit.note} (${args.cacheDir})`);
   const initPath = join(args.cacheDir, "init.ts");

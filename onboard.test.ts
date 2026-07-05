@@ -39,9 +39,9 @@ describe("parseArgs", () => {
     expect(() => parseArgs(["--nope"], {})).toThrow(OnboardError);
   });
 
-  test("refuses to run against the unpublished placeholder repo", () => {
+  test("defaults to the published kit repo", () => {
     const args = parseArgs([], { HARNESS_KIT_CACHE: "/tmp/cache" });
-    expect(() => runOnboard(args)).toThrow(OnboardError);
+    expect(args.repo).toBe("https://github.com/nguyenngocanh94/harness.git");
   });
 });
 
