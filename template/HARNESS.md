@@ -25,6 +25,7 @@ Kit version: see `docs/harness/kit-version`; update by re-running the kit's `ini
 | Definition of done + self-check | `CLAUDE.md` | TODO(harness): commands wired at onboarding |
 | Merge philosophy | `CLAUDE.md` | installed |
 | Feature docs (invariants, verify-as-command) | `docs/features/_template.md` | installed |
+| Feature-start workflow (intake → gate check → doc → done) | `.claude/commands/feature.md` | installed; optional to use |
 | Design records | `docs/plans/` | convention installed |
 | Friction log (prediction → outcome) | `docs/harness/friction.md` | installed |
 | Mechanical enforcement (CI, lint, architecture rules) | — | deferred → see the pillars plan in `docs/plans/` |

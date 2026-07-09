@@ -38,6 +38,7 @@ const EXPECTED_FILES = [
   "docs/harness/friction.md",
   "docs/features/_template.md",
   ".claude/commands/harness-onboard.md",
+  ".claude/commands/feature.md",
 ];
 
 describe("runInit", () => {

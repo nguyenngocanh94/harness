@@ -1,0 +1,49 @@
+---
+description: Turn a feature request into a scoped, harness-aligned starting point — intake questions, gate check, a feature doc, and the path to done. Optional.
+argument-hint: [short description of the feature, optional]
+---
+
+You are helping start a feature on a repo that runs the harness-kit harness.
+This command is **optional** and **generic**: it prescribes no development methodology of its own — it reads *this repo's* adapted `CLAUDE.md` and threads its existing rules (reading map, hard gates, definition of done, merge philosophy) into one path. Skip it for trivial changes; it earns its keep on features big enough to deserve a doc.
+
+`$ARGUMENTS` may carry a short feature description; treat it as the opening request if present.
+
+## Step 1 — Understand what the human wants (the intake)
+
+If `$ARGUMENTS` is non-empty, restate it in one sentence and confirm you have it right. Otherwise ask what they want to build.
+
+Then draw out scope with focused questions, **one at a time**, building on each answer — never a form dumped all at once. Ask only as many as you need to fill a feature doc honestly:
+
+1. What does the user see when it works — the observable behavior?
+2. What is explicitly **out of scope** for this feature?
+3. What existing parts of the system does it touch, or is it net-new?
+4. What observably proves it is done (a check, a command, a manual step)?
+
+Stop asking the moment you can name the files you will change and the command that will prove the change works — that is the `CLAUDE.md` stop rule. Do not invent answers to fill gaps; unknowns become "Open items" in the feature doc.
+
+## Step 2 — Orient in the repo
+
+Read `CLAUDE.md`'s "What to read for a task" and load **only** the doc it routes you to. Confirm the entry-point files you'll change and the proof command. Don't read the whole tree.
+
+## Step 3 — Gate check (stop here if it applies)
+
+Read `CLAUDE.md`'s "Hard gates". If the feature crosses one — auth/session/credential behavior, a schema or data migration, deleting user data, weakening validation/tests/the definition of done, or a domain gate — **stop and confirm with the human**, and a decision record in `docs/plans/` is required *before* any code.
+
+## Step 4 — Record intent in the right place
+
+- **Cross-cutting, gated, or design-heavy** (a real "why this shape" decision with rejected alternatives) → write a design record in `docs/plans/<date>-<name>.md` first, then link it from the feature doc.
+- **Otherwise** → create `docs/features/<kebab-name>.md` from [`docs/features/_template.md`](../../docs/features/_template.md), filled from Step 1: Scope, What it does, Invariants, How to verify. Leave genuine TBDs under "Open items" so nothing gets invented later.
+
+This doc is the deliverable of intake — it exists before implementation, and is updated in the same change that changes the feature.
+
+## Step 5 — Build
+
+Follow the repo's Conventions and whatever development discipline `CLAUDE.md` (and the human's global rules) define — this command imposes none. Keep to one branch, small batches.
+
+## Step 6 — Verify (definition of done)
+
+Run `CLAUDE.md`'s Verification list in order, plus the feature doc's "How to verify". Execute the commands and include their real output — do not paraphrase. If a step isn't wired up in this repo, say so explicitly instead of skipping it silently.
+
+## Step 7 — Merge with evidence
+
+Every merge carries its evidence: the verification output and the three self-check answers from `CLAUDE.md` — did this change make any doc stale (fix it here); did I hit harness friction (log it in `docs/harness/friction.md`); what did I not attempt (say so).
