@@ -45,8 +45,8 @@ Overrides: `--repo=<git-url>` or `HARNESS_KIT_REPO` (fork/mirror), `--ref=<branc
 | `HARNESS.md` | the experiment map: principles, the seven pillars, mechanism inventory, seeded bets, probe protocol |
 | `docs/harness/friction.md` | the learning loop — protocol header, zero entries |
 | `docs/features/_template.md` | per-feature doc template (invariants, verify-as-command) |
-| `docs/harness/workflows/{onboard,feature,pillar}.md` | tool-neutral workflow bodies — the single source any agent follows |
-| `.claude/commands/{harness-onboard,feature,harness-pillar}.md` | thin Claude Code entry points that delegate to the workflow bodies |
+| `docs/harness/workflows/{onboard,feature,pillar,review}.md` | tool-neutral workflow bodies — the single source any agent follows |
+| `.claude/commands/{harness-onboard,feature,harness-pillar,harness-review}.md` | thin Claude Code entry points that delegate to the workflow bodies |
 | `docs/harness/kit-version` | stamp for update tracking (the only file init ever rewrites) |
 
 If `AGENTS.md` or `HARNESS.md` already exist, init leaves them untouched and drops a `<name>.harness-kit` reference copy next to them; onboarding merges and deletes it. A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and onboarding moves the content into `AGENTS.md` and installs the bridge.

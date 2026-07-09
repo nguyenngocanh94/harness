@@ -24,10 +24,10 @@ The harness is assessed along seven pillars. Onboarding co-builds a **thin defau
 | Knowledge in repo | Orientation lives in the repo, not in chat | Filled `AGENTS.md`, a reading map pointing only at docs that exist, feature docs |
 | Mechanical enforcement | Machines, not memory, hold the line | One runnable `verify` chaining the definition of done; heavier CI/rules deferred |
 | Runtime legibility | The running system can be observed and reproduced | A short note: where logs go, how to reproduce a bug, what state matters |
-| Entropy control | Docs and rules stay lean; cruft is deleted | Friction log + "docs earn their existence, deleted when premature" |
+| Entropy control | Docs and rules stay lean; cruft is deleted | Friction log + "docs earn their existence, deleted when premature" + a periodic `/harness-review` prune |
 | Merge philosophy | How a change earns its way in | Branch-per-task, evidence carried, DoD stands in until CI exists |
 | Human role | Where human judgment is mandatory | Hard gates (generic four + domain gates from the interview) |
-| Feedback loop | The harness learns from its own friction | Friction log with prediction → outcome; kit-template friction ports upstream |
+| Feedback loop | The harness learns from its own friction | Friction log with prediction → outcome; `/harness-review` closes/escalates open entries on a cadence; kit-template friction ports upstream |
 
 A pillar left thin is not a gap to hide — its thin state and the path to thicken it are recorded at onboarding. Thickening is co-built, never auto-generated.
 
@@ -44,6 +44,7 @@ A pillar left thin is not a gap to hide — its thin state and the path to thick
 | Feature docs (invariants, verify-as-command) | `docs/features/_template.md` | installed |
 | Feature-start workflow (intake → gate check → doc → done) | `.claude/commands/feature.md` | installed; optional to use |
 | Pillar thickening workflow | `.claude/commands/harness-pillar.md` | installed; run when a thin layer needs to grow |
+| Maintenance workflow (friction sweep + docs prune) | `.claude/commands/harness-review.md` | installed; run per release or when open friction entries > ~5 |
 | Design records | `docs/plans/` | convention installed |
 | Friction log (prediction → outcome) | `docs/harness/friction.md` | installed |
 | Definition-of-done runner (thin enforcement) | a `verify` entry point | TODO(harness): wired at onboarding (Stage B, pillar 3) |
@@ -56,7 +57,7 @@ Each bet names its measurement; evidence accumulates in the friction log and clo
 
 1. **Hub-and-spoke routing works** — an agent given a scoped task loads only the relevant doc, not the whole tree.
    Measure: docs read during scoped probe tasks.
-2. **A thin CLAUDE.md does not starve agents** — orientation comes from the pointer structure, not a fat always-loaded file.
+2. **A thin AGENTS.md does not starve agents** — orientation comes from the pointer structure, not a fat always-loaded file.
    Measure: orientation questions agents ask that the docs should have answered.
 3. **Prompt-level gates hold** — agents stop at hard gates without mechanical enforcement.
    Measure: gate bypasses recorded as friction (target: zero; any bypass escalates that gate to a hook or CI rule).

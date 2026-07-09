@@ -43,9 +43,11 @@ const EXPECTED_FILES = [
   "docs/harness/workflows/onboard.md",
   "docs/harness/workflows/feature.md",
   "docs/harness/workflows/pillar.md",
+  "docs/harness/workflows/review.md",
   ".claude/commands/harness-onboard.md",
   ".claude/commands/feature.md",
   ".claude/commands/harness-pillar.md",
+  ".claude/commands/harness-review.md",
 ];
 
 describe("runInit", () => {

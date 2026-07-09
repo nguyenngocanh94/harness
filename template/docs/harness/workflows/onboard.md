@@ -81,6 +81,7 @@ Co-write a short legibility note with the human: where logs go, how to reproduce
 ### B5 — Entropy control (mostly agree, little to build)
 
 Confirm the team accepts the seeded rules: the append-only friction protocol and "docs must earn their existence, deleted when premature." Adjust wording only if their reality differs.
+Set the review cadence: the `/harness-review` ritual (friction sweep + docs prune) runs at each release, or when open friction entries exceed ~5 — whichever comes first. Agree on which trigger fits this team.
 
 ### B6 — Merge philosophy (confirm it matches reality)
 
@@ -88,7 +89,7 @@ The merge section ships in AGENTS.md prose. Confirm it matches how the team actu
 
 ### B7 — Feedback loop (confirm understanding)
 
-Confirm the human understands: friction entries close with observed outcomes, harness changes carry a prediction, and friction about the kit's own templates ports back upstream. The four generic bets in HARNESS.md are seeded.
+Confirm the human understands: friction entries close with observed outcomes, harness changes carry a prediction, and friction about the kit's own templates ports back upstream. The four generic bets in HARNESS.md are seeded. Open entries do not rot — the `/harness-review` ritual (cadence set in B5) closes or escalates them.
 
 ---
 

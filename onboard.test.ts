@@ -51,7 +51,7 @@ describe("ensureKit", () => {
     const first = ensureKit(KIT_REPO, undefined, cache);
     expect(first.updated).toBe(true);
     expect(existsSync(join(cache, "init.ts"))).toBe(true);
-    expect(existsSync(join(cache, "template", "CLAUDE.md"))).toBe(true);
+    expect(existsSync(join(cache, "template", "AGENTS.md"))).toBe(true);
 
     const second = ensureKit(KIT_REPO, undefined, cache);
     expect(existsSync(join(cache, "init.ts"))).toBe(true);
