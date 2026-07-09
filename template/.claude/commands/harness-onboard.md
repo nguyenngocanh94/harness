@@ -8,9 +8,10 @@ The skeleton files already exist; your job is **adaptation**: record what IS tru
 Rules that govern the whole run:
 
 - **Facts only.** Every command you write into CLAUDE.md must have been executed by you, now, successfully. Every doc you point at must exist. Every stack claim must be verifiable in the repo.
+- **Never invent the project's purpose.** What the project *is* is a fact that lives in the human, not something you infer from a filename, a stray dependency, or an empty scaffold. If you cannot establish it from what's actually in the repo, you elicit it (phase 1b) — you do not guess and you do not fill the slot with a plausible-sounding description.
 - **Do not create** architecture docs, enforcement configs (CI, linters, dependency rules), or logging/observability — those need human decisions and get handed off in phase 6.
 - Work on a branch (`harness-onboard`); one commit at the end, carrying evidence.
-- Ask the human one focused question at a time; only phase 3 requires one.
+- Ask the human one focused question at a time. Two phases talk to the human: phase 1b (purpose, only when it isn't discoverable from the repo) and phase 3 (gates).
 - Friction you hit during this onboarding goes into `docs/harness/friction.md` — the onboarding is this repo's first probe.
 
 ## Phase 1 — Inventory (read-only)
@@ -18,12 +19,28 @@ Rules that govern the whole run:
 Detect the stack(s) from manifests (`package.json`, `composer.json`, `go.mod`, `build.gradle`, `Cargo.toml`, `pyproject.toml`, …).
 Find the real commands: test, lint, typecheck/build — from manifest scripts, CI configs, Makefiles, and READMEs.
 Map which docs exist and what they cover.
+Assess whether the repo tells you what it is: does existing source, a README, or manifest metadata make the project's purpose legible? Note the answer — it decides phase 1b.
 Stop when you can fill every `TODO(harness)` slot or explicitly know it must stay open.
+
+## Phase 1b — Establish purpose (interview, only if inventory didn't)
+
+If phase 1 could not establish what the project is — an empty or near-empty repo, a bare scaffold, no README, nothing that states intent — then the purpose is not in the repo to be read; it is in the human's head. Do **not** proceed to fill CLAUDE.md from a guess.
+
+Instead, run a short brainstorming interview to draw it out. Socratic, one question at a time, building on each answer — never a form dumped all at once. Cover, in order and only as far as the human can answer:
+
+1. What is this project going to be — the problem it solves and for whom?
+2. Who or what consumes it (users, other services, a CLI, a library API)?
+3. What are its boundaries — what it deliberately will *not* do?
+4. Any stack decisions already made, or still open?
+
+Stop as soon as you can write an honest 2–4 sentence description. Record it as **stated intent**, not verified fact — the code that proves it doesn't exist yet. Stack answers here are *intended* stack: capture them in the pillars plan as decisions to confirm, and leave the CLAUDE.md stack slot open until real manifests back it.
+
+If phase 1 already made the purpose legible from the repo, skip this phase entirely — do not interview a human for something the code already says.
 
 ## Phase 2 — Merge and fill CLAUDE.md and HARNESS.md
 
 If `CLAUDE.md.harness-kit` or `HARNESS.md.harness-kit` exist, the repo had its own versions: merge the reference copy's harness sections into the existing file — preserve the repo's own content, do not duplicate overlapping guidance — then delete the `.harness-kit` file.
-Fill the `TODO(harness)` slots you have verified facts for: what-the-project-is, stack, commands.
+Fill the `TODO(harness)` slots you have grounding for: what-the-project-is (from the repo, or from phase 1b's stated intent — never a guess), stack, commands. If purpose came from the interview, write it plainly; the reading map and verification below will still be thin because no code backs it yet.
 Update HARNESS.md's installed-mechanisms table to reflect reality (installed / adapted / deferred).
 Leave a slot open rather than guessing; open slots are listed in the pillars plan.
 
