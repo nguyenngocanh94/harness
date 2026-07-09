@@ -15,7 +15,7 @@ Requirements on any machine: `bun` and `git`. Then, from anywhere:
 curl -fsSL https://raw.githubusercontent.com/nguyenngocanh94/harness/main/onboard.ts | bun - /path/to/target-repo
 ```
 
-The first run clones the kit into `~/.cache/harness-kit`; later runs fast-forward it, so every machine installs the latest kit automatically (offline falls back to the cached copy). When it finishes, open the target repo in Claude Code and run `/harness-onboard` — the skeleton is installed, the adaptation happens there.
+The first run clones the kit into `~/.cache/harness-kit`; later runs fast-forward it, so every machine installs the latest kit automatically (offline falls back to the cached copy). When it finishes, open the target repo in your agent tool and run the onboarding workflow (`/harness-onboard` in Claude Code; other tools read the same body from `docs/harness/workflows/onboard.md`) — the skeleton is installed, the adaptation happens there.
 
 Convenience alias for your dotfiles:
 
@@ -40,16 +40,16 @@ Overrides: `--repo=<git-url>` or `HARNESS_KIT_REPO` (fork/mirror), `--ref=<branc
 
 | File | Role |
 | --- | --- |
-| `CLAUDE.md` | operating manual scaffold — generic core verbatim, `TODO(harness)` slots for judgment |
-| `HARNESS.md` | the experiment map: principles, mechanism inventory, seeded bets, probe protocol |
+| `AGENTS.md` | operating manual scaffold, canonical — read by every AGENTS.md-aware tool (Codex, Cursor, Copilot, Gemini CLI, Aider, Zed, …); generic core verbatim, `TODO(harness)` slots |
+| `CLAUDE.md` | bridge to `AGENTS.md` (symlink, or an `@AGENTS.md` shim) so Claude Code reads the manual too — created by init |
+| `HARNESS.md` | the experiment map: principles, the seven pillars, mechanism inventory, seeded bets, probe protocol |
 | `docs/harness/friction.md` | the learning loop — protocol header, zero entries |
 | `docs/features/_template.md` | per-feature doc template (invariants, verify-as-command) |
-| `.claude/commands/harness-onboard.md` | the onboarding session — discuss the basics, co-build a thin layer per pillar |
-| `.claude/commands/feature.md` | optional feature-start workflow (intake → gate check → doc → done) |
-| `.claude/commands/harness-pillar.md` | thicken one pillar past its thin layer, co-built with the human |
+| `docs/harness/workflows/{onboard,feature,pillar}.md` | tool-neutral workflow bodies — the single source any agent follows |
+| `.claude/commands/{harness-onboard,feature,harness-pillar}.md` | thin Claude Code entry points that delegate to the workflow bodies |
 | `docs/harness/kit-version` | stamp for update tracking (the only file init ever rewrites) |
 
-If `CLAUDE.md` or `HARNESS.md` already exist, init leaves them untouched and drops a `<name>.harness-kit` reference copy next to them; `/harness-onboard` merges and deletes it.
+If `AGENTS.md` or `HARNESS.md` already exist, init leaves them untouched and drops a `<name>.harness-kit` reference copy next to them; onboarding merges and deletes it. A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and onboarding moves the content into `AGENTS.md` and installs the bridge.
 
 ## Updating an onboarded repo
 

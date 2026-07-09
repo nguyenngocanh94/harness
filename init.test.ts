@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import {
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -32,11 +33,16 @@ afterEach(() => {
   }
 });
 
+// Files created by walking the template. CLAUDE.md is created separately as a
+// bridge, so it is asserted in its own test, not here.
 const EXPECTED_FILES = [
-  "CLAUDE.md",
+  "AGENTS.md",
   "HARNESS.md",
   "docs/harness/friction.md",
   "docs/features/_template.md",
+  "docs/harness/workflows/onboard.md",
+  "docs/harness/workflows/feature.md",
+  "docs/harness/workflows/pillar.md",
   ".claude/commands/harness-onboard.md",
   ".claude/commands/feature.md",
   ".claude/commands/harness-pillar.md",
@@ -72,18 +78,55 @@ describe("runInit", () => {
     expect(second.previousKitVersion).toBe(KIT_VERSION);
   });
 
-  test("existing CLAUDE.md is untouched and gets a merge reference copy", () => {
+  test("creates a CLAUDE.md bridge to the AGENTS.md manual", () => {
+    const dir = scratch();
+    const report = runInit(dir);
+    expect(report.created).toContain("CLAUDE.md");
+    expect(report.bridge).not.toBeNull();
+    expect(existsSync(join(dir, "CLAUDE.md"))).toBe(true);
+    if (report.bridge === "symlink") {
+      expect(lstatSync(join(dir, "CLAUDE.md")).isSymbolicLink()).toBe(true);
+      // Following the symlink yields the canonical manual's content.
+      expect(readFileSync(join(dir, "CLAUDE.md"), "utf8")).toBe(
+        readFileSync(join(dir, "AGENTS.md"), "utf8"),
+      );
+    } else {
+      expect(readFileSync(join(dir, "CLAUDE.md"), "utf8").trim()).toBe(
+        "@AGENTS.md",
+      );
+    }
+  });
+
+  test("existing AGENTS.md is untouched and gets a merge reference copy", () => {
     const dir = scratch();
     const original = "# My project\n\nPre-existing instructions.\n";
-    writeFileSync(join(dir, "CLAUDE.md"), original);
+    writeFileSync(join(dir, "AGENTS.md"), original);
     const report = runInit(dir);
-    expect(readFileSync(join(dir, "CLAUDE.md"), "utf8")).toBe(original);
-    expect(report.skipped).toContain("CLAUDE.md");
-    expect(report.references).toContain("CLAUDE.md.harness-kit");
-    expect(existsSync(join(dir, "CLAUDE.md.harness-kit"))).toBe(true);
+    expect(readFileSync(join(dir, "AGENTS.md"), "utf8")).toBe(original);
+    expect(report.skipped).toContain("AGENTS.md");
+    expect(report.references).toContain("AGENTS.md.harness-kit");
+    expect(existsSync(join(dir, "AGENTS.md.harness-kit"))).toBe(true);
 
     const second = runInit(dir);
     expect(second.references).toEqual([]);
+  });
+
+  test("migrates an old CLAUDE.md-only repo without overwriting it", () => {
+    const dir = scratch();
+    const oldManual = "# Old manual\n\nfilled by an older kit.\n";
+    writeFileSync(join(dir, "CLAUDE.md"), oldManual);
+    const report = runInit(dir);
+    // The repo's own CLAUDE.md is left exactly as it was.
+    expect(readFileSync(join(dir, "CLAUDE.md"), "utf8")).toBe(oldManual);
+    // No empty AGENTS.md is laid down beside it.
+    expect(existsSync(join(dir, "AGENTS.md"))).toBe(false);
+    // A reference is dropped for the onboarding workflow to migrate from.
+    expect(report.migrationPending).toBe(true);
+    expect(report.references).toContain("AGENTS.md.harness-kit");
+    expect(existsSync(join(dir, "AGENTS.md.harness-kit"))).toBe(true);
+    // No bridge is created while a real CLAUDE.md is present.
+    expect(report.bridge).toBeNull();
+    expect(report.created).not.toContain("CLAUDE.md");
   });
 
   test("non-merge files are skipped without reference copies", () => {

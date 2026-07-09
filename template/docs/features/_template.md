@@ -33,7 +33,7 @@
 
 Run these from the repo root and include their output when claiming done — execute, do not paraphrase.
 Mark human-only steps with `MANUAL:`.
-These are feature-specific proof, on top of the global definition of done in CLAUDE.md.
+These are feature-specific proof, on top of the global definition of done in AGENTS.md.
 
 ```bash
 <test command for this feature>

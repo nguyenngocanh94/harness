@@ -16,6 +16,14 @@ TODO(harness): route task types to the docs that actually exist, one line each (
 
 Stop reading when you can name the files you will change and the command that proves the change works.
 
+## Workflows
+
+Repeatable procedures live as workflow docs any agent can follow (in Claude Code they are also slash commands):
+
+- Onboard this repo onto the harness → `docs/harness/workflows/onboard.md` (`/harness-onboard`)
+- Start a feature → `docs/harness/workflows/feature.md` (`/feature`)
+- Thicken one harness pillar → `docs/harness/workflows/pillar.md` (`/harness-pillar`)
+
 ## Conventions
 
 - Match existing patterns in the codebase before introducing new ones.

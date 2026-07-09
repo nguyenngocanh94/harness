@@ -2,7 +2,7 @@
 
 This repo runs a **harness**: repo patterns that make agent-driven development reliable, installed by [harness-kit](https://github.com/nguyenngocanh94/harness) and adapted at onboarding.
 This document is the harness's map: what we believe, what is installed, and what bets are running.
-Operational rules live in [`CLAUDE.md`](./CLAUDE.md) and are linked, never restated, here.
+Operational rules live in [`AGENTS.md`](./AGENTS.md) (the canonical manual; a `CLAUDE.md` bridge points Claude Code at it) and are linked, never restated, here.
 Kit version: see `docs/harness/kit-version`; update by re-running the kit's `init.ts`.
 
 ## Principles under test
@@ -21,7 +21,7 @@ The harness is assessed along seven pillars. Onboarding co-builds a **thin defau
 
 | Pillar | What it is | Thin default layer |
 | --- | --- | --- |
-| Knowledge in repo | Orientation lives in the repo, not in chat | Filled `CLAUDE.md`, a reading map pointing only at docs that exist, feature docs |
+| Knowledge in repo | Orientation lives in the repo, not in chat | Filled `AGENTS.md`, a reading map pointing only at docs that exist, feature docs |
 | Mechanical enforcement | Machines, not memory, hold the line | One runnable `verify` chaining the definition of done; heavier CI/rules deferred |
 | Runtime legibility | The running system can be observed and reproduced | A short note: where logs go, how to reproduce a bug, what state matters |
 | Entropy control | Docs and rules stay lean; cruft is deleted | Friction log + "docs earn their existence, deleted when premature" |
@@ -35,11 +35,12 @@ A pillar left thin is not a gap to hide — its thin state and the path to thick
 
 | Mechanism | Where | Status |
 | --- | --- | --- |
-| Thin operating manual | `CLAUDE.md` | installed by kit; adapted at onboarding |
-| Task→reading map + stop rule | `CLAUDE.md` | TODO(harness): entries filled at onboarding |
-| Hard gates | `CLAUDE.md` | generic four installed; domain gates from the onboarding interview |
-| Definition of done + self-check | `CLAUDE.md` | TODO(harness): commands wired at onboarding |
-| Merge philosophy | `CLAUDE.md` | installed |
+| Thin operating manual | `AGENTS.md` | installed by kit; adapted at onboarding |
+| Cross-tool bridge | `CLAUDE.md` → `AGENTS.md` (symlink/shim) | installed by init so Claude Code reads the manual |
+| Task→reading map + stop rule | `AGENTS.md` | TODO(harness): entries filled at onboarding |
+| Hard gates | `AGENTS.md` | generic four installed; domain gates from the onboarding interview |
+| Definition of done + self-check | `AGENTS.md` | TODO(harness): commands wired at onboarding |
+| Merge philosophy | `AGENTS.md` | installed |
 | Feature docs (invariants, verify-as-command) | `docs/features/_template.md` | installed |
 | Feature-start workflow (intake → gate check → doc → done) | `.claude/commands/feature.md` | installed; optional to use |
 | Pillar thickening workflow | `.claude/commands/harness-pillar.md` | installed; run when a thin layer needs to grow |
