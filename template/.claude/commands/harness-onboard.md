@@ -1,84 +1,103 @@
 ---
-description: Adapt the harness-kit skeleton to this repo — verified facts, domain gates, reading map, then a pillar handoff.
+description: Onboard this repo onto the harness — discuss the basics with the human, then co-build a thin default layer for every pillar. Slow by design.
 ---
 
 You are onboarding this repository onto the harness installed by harness-kit.
-The skeleton files already exist; your job is **adaptation**: record what IS true about this repo, and never create what ISN'T.
+The skeleton files already exist. Onboarding is **not** a form-fill and it is **not** fast — it is a working session with the human that (A) establishes what this repo is, then (B) walks each of the seven pillars and **co-builds a thin default layer** for it. You build *with* the human, one decision at a time; you do not hand off a pile of prompts and stop.
+
+The pillar model and the thin-default target for each pillar are defined in [`HARNESS.md`](../../HARNESS.md) ("The seven pillars"). Read it first.
 
 Rules that govern the whole run:
 
-- **Facts only.** Every command you write into CLAUDE.md must have been executed by you, now, successfully. Every doc you point at must exist. Every stack claim must be verifiable in the repo.
-- **Never invent the project's purpose.** What the project *is* is a fact that lives in the human, not something you infer from a filename, a stray dependency, or an empty scaffold. If you cannot establish it from what's actually in the repo, you elicit it (phase 1b) — you do not guess and you do not fill the slot with a plausible-sounding description.
-- **Do not create** architecture docs, enforcement configs (CI, linters, dependency rules), or logging/observability — those need human decisions and get handed off in phase 6.
+- **Never invent product facts.** What the project *is* — its purpose and behavior — lives in the human or in the code, never in a guess. If the repo does not tell you, you ask (Stage A). You never fill a slot with a plausible-sounding description.
+- **Co-build the harness, don't defer it.** Every pillar gets a thin layer built *now*, with the human confirming each decision. "Needs human buy-in" is not a reason to defer — it is the reason to build it together in this session. Only thickening beyond thin (full CI, architecture rules, observability infra) is deferred, and it goes to `/harness-pillar`, not a paste-prompt.
+- **Facts only in what you write.** Every command you record must have been executed by you, now, successfully. Every doc you point at must exist. Every stack claim must be verifiable.
+- **Thin means thin.** Build the thinnest version that works or is honestly stubbed. Do not scaffold CI, heavy lint rules, or logging infrastructure unprompted — those are `/harness-pillar` territory.
+- Ask one focused question at a time, building on each answer — never dump a form. Stage A and the gates/legibility steps are conversations.
 - Work on a branch (`harness-onboard`); one commit at the end, carrying evidence.
-- Ask the human one focused question at a time. Two phases talk to the human: phase 1b (purpose, only when it isn't discoverable from the repo) and phase 3 (gates).
-- Friction you hit during this onboarding goes into `docs/harness/friction.md` — the onboarding is this repo's first probe.
+- Friction you hit belongs in `docs/harness/friction.md` — this onboarding is the repo's first probe.
 
-## Phase 1 — Inventory (read-only)
+---
+
+## Stage A — Establish the basics (with the human)
+
+Goal: agree on the three things the whole harness hangs off, before building anything. Do not proceed to Stage B until purpose, stack, and (for an existing project) architecture are written and the human has agreed to them.
+
+### A1 — Inventory (read-only)
 
 Detect the stack(s) from manifests (`package.json`, `composer.json`, `go.mod`, `build.gradle`, `Cargo.toml`, `pyproject.toml`, …).
-Find the real commands: test, lint, typecheck/build — from manifest scripts, CI configs, Makefiles, and READMEs.
-Map which docs exist and what they cover.
-Assess whether the repo tells you what it is: does existing source, a README, or manifest metadata make the project's purpose legible? Note the answer — it decides phase 1b.
-Stop when you can fill every `TODO(harness)` slot or explicitly know it must stay open.
+Find the real commands: test, lint, typecheck/build — from manifest scripts, CI configs, Makefiles, READMEs.
+Map which docs exist and what they cover, and sketch the architecture if the source has a discoverable shape.
+Assess the key question: **does the repo tell you what it is?** Existing source, a README, or manifest metadata may make the purpose legible; an empty or bare-scaffold repo will not. This decides A2.
 
-## Phase 1b — Establish purpose (interview, only if inventory didn't)
+### A2 — Agree on purpose, stack, architecture
 
-If phase 1 could not establish what the project is — an empty or near-empty repo, a bare scaffold, no README, nothing that states intent — then the purpose is not in the repo to be read; it is in the human's head. Do **not** proceed to fill CLAUDE.md from a guess.
+- **Existing repo (purpose legible):** present what you found — a 2–4 sentence purpose, the stack, and an architecture sketch — and ask the human to **confirm or correct** it. Your discovery is a proposal, not a verdict; what the human confirms is what gets written.
+- **Greenfield / bare repo (purpose not legible):** the purpose is in the human's head, not the repo. Run a short Socratic interview, one question at a time, only as far as the human can answer:
+  1. What is this project going to be — the problem it solves and for whom? (Not deep features; they don't exist yet.)
+  2. Who or what consumes it (users, another service, a CLI, a library API)?
+  3. What are its boundaries — what it deliberately will *not* do?
+  4. Any stack decisions already made, or still open?
 
-Instead, run a short brainstorming interview to draw it out. Socratic, one question at a time, building on each answer — never a form dumped all at once. Cover, in order and only as far as the human can answer:
+  Record the result as **stated intent**, not verified fact — the code that proves it doesn't exist yet. Intended-stack answers go to the pillars notes as decisions to confirm; the CLAUDE.md stack slot stays open until real manifests back it.
 
-1. What is this project going to be — the problem it solves and for whom?
-2. Who or what consumes it (users, other services, a CLI, a library API)?
-3. What are its boundaries — what it deliberately will *not* do?
-4. Any stack decisions already made, or still open?
+Stop Stage A when you can write an honest purpose, the stack (or "intended, unconfirmed"), and an architecture pointer (or "none yet"). Name anything still unknown; do not guess it.
 
-Stop as soon as you can write an honest 2–4 sentence description. Record it as **stated intent**, not verified fact — the code that proves it doesn't exist yet. Stack answers here are *intended* stack: capture them in the pillars plan as decisions to confirm, and leave the CLAUDE.md stack slot open until real manifests back it.
+---
 
-If phase 1 already made the purpose legible from the repo, skip this phase entirely — do not interview a human for something the code already says.
+## Stage B — Walk each pillar and co-build its thin default layer
 
-## Phase 2 — Merge and fill CLAUDE.md and HARNESS.md
+Go through the pillars in order. For each: **explain what it is → discuss what this repo needs → build the thinnest working version → verify → record.** The human confirms every decision; nothing is wired silently. Fill the matching `TODO(harness)` slots as you go.
 
-If `CLAUDE.md.harness-kit` or `HARNESS.md.harness-kit` exist, the repo had its own versions: merge the reference copy's harness sections into the existing file — preserve the repo's own content, do not duplicate overlapping guidance — then delete the `.harness-kit` file.
-Fill the `TODO(harness)` slots you have grounding for: what-the-project-is (from the repo, or from phase 1b's stated intent — never a guess), stack, commands. If purpose came from the interview, write it plainly; the reading map and verification below will still be thin because no code backs it yet.
-Update HARNESS.md's installed-mechanisms table to reflect reality (installed / adapted / deferred).
-Leave a slot open rather than guessing; open slots are listed in the pillars plan.
+If `CLAUDE.md.harness-kit` or `HARNESS.md.harness-kit` exist, the repo had its own versions: merge the reference copy's harness sections into the existing file — preserve the repo's own content, don't duplicate overlapping guidance — then delete the `.harness-kit` file. Do this as you touch each file below.
 
-## Phase 3 — The gates interview
+### B1 — Knowledge in repo (spend the most time here)
 
-The four generic hard gates are pre-filled.
-Ask the human one question: *"What else is irreversible, externally binding, or dangerous in this domain — things an agent must stop and confirm before touching?"*
-Write their answer as concrete gate lines; replace the TODO.
+The richest pillar; everything else routes through it.
 
-## Phase 4 — Reading map from reality
+- **Operating manual** — fill CLAUDE.md's what-it-is (from Stage A), stack, and commands (each executed successfully, now). Conventions must point at code that exists, not aspirations.
+- **Reading map + stop rule** — fill "What to read for a task" with one line per task kind, routing only to docs that **actually exist**. A thin-doc repo gets a short, honest map. Never fabricate a doc to point at; a missing doc is a pillars note, and (for an existing project) an architecture note goes here or is recorded as an open item.
+- **Feature docs** — confirm the human understands when `/feature` spawns `docs/features/<name>.md`: when a feature has an invariant to preserve, touches more than one area, or needs its own verify command.
 
-Fill "What to read for a task" with routes to docs that actually exist, one line per task kind.
-A repo with thin docs gets a short, honest map.
-Never fabricate a doc to give the map something to point at — missing docs are a pillars-plan item.
+Update HARNESS.md's installed-mechanisms table to reflect reality. Leave a slot open rather than guessing.
 
-## Phase 5 — Definition of done, verified
+### B2 — Human role / hard gates (spend the most time here)
 
-Run each candidate command (typecheck/build, lint, test).
-Write into the Verification section only the ones that pass; broken or missing steps are recorded in the pillars plan, and the Verification section says explicitly which steps are not wired yet.
+A gate is a promise about what an agent must not touch alone. The four generic gates ship pre-filled (data-losing migration, auth/session/credential change, weakening validation/tests/DoD, deleting user data).
 
-## Phase 6 — Pillar handoff (do not skip)
+Discuss domain gates as a **conversation, not a single question**. Walk the human through the categories, one at a time: what here is irreversible, externally binding, money-moving, destructive, or compliance-bound? Turn each answer into a concrete gate line phrased as a stop-and-confirm trigger the agent can recognize. Replace the TODO with those lines.
+Confirm the escalation rule: crossing a gate needs a decision record in `docs/plans/`; bypassing one that should have stopped you is friction to log.
 
-Write `docs/plans/<today>-harness-pillars-plan.md`:
+### B3 — Mechanical enforcement (thin: the verify runner)
 
-1. A seven-pillar assessment table — knowledge in repo, mechanical enforcement, runtime legibility, entropy control, merge philosophy, human role, feedback loop — with what the kit + this onboarding wired vs what remains.
-2. For each open pillar, a **ready-to-paste prompt for a fresh session**, context included. Use these shapes:
-   - Mechanical enforcement: "Read CLAUDE.md, HARNESS.md, and docs/plans/<today>-harness-pillars-plan.md. Brainstorm mechanical enforcement for this repo: CI running the definition of done, <stack-appropriate architecture/lint rules>, and permission deny-rules for destructive commands. Confirm each with me before wiring anything."
-   - Runtime legibility: "Read CLAUDE.md and docs/plans/<today>-harness-pillars-plan.md. Brainstorm what runtime state must be observable in this system — structured logs, state dumps, deterministic reproduction — write the legibility contract into the docs, then plan implementation."
-   - Missing architecture docs, entropy control, or other gaps: same shape, scoped to the gap.
-3. Stack-appropriate enforcement suggestions for the prompt above: TS/JS → Biome + dependency-cruiser; PHP → PHPStan + Deptrac; Go → golangci-lint + depguard; Kotlin → detekt + Konsist; Rust → clippy + cargo-deny; Python → ruff + import-linter. Suggestions only — nothing is wired during onboarding.
+The one genuinely new build. Wire the definition-of-done commands into **one runnable `verify` entry point** (a package script, Makefile target, or shell script — whatever fits the stack) that runs typecheck → lint → test in order. Run it; it must pass. "Done" is now a command, not a paragraph — record it in CLAUDE.md's Verification section.
+If a step isn't wired in this repo, say so explicitly and leave it out of `verify` rather than faking it; note the gap for `/harness-pillar`.
+Do **not** create CI pipelines or dependency/architecture rules here — those are thickening. When you note the gap, record the stack-appropriate suggestion for later: TS/JS → Biome + dependency-cruiser; PHP → PHPStan + Deptrac; Go → golangci-lint + depguard; Kotlin → detekt + Konsist; Rust → clippy + cargo-deny; Python → ruff + import-linter.
 
-## Phase 7 — Close
+### B4 — Runtime legibility (thin: a note, not infra)
 
-Run the definition of done as now written.
-Commit the branch with the onboarding changes.
-End your report with:
+Co-write a short legibility note with the human: where logs go, how to reproduce a bug end-to-end, what runtime state matters. Docs, not tooling — the thinnest honest version. Greenfield: a stub listing the open questions. Observability infrastructure is `/harness-pillar` work.
 
-- files created/adapted, and every `TODO(harness)` slot still open;
-- the pillar assessment table;
-- the teaching block: which pillars are open, one line on **why each was deliberately not attempted here** (enforcement changes CI/deps and needs buy-in; legibility needs product knowledge), and the ready-to-paste fresh-session prompts;
-- the three self-check answers: did I make any doc stale; did I hit friction (logged?); what did I not attempt.
+### B5 — Entropy control (mostly agree, little to build)
+
+Confirm the team accepts the seeded rules: the append-only friction protocol and "docs must earn their existence, deleted when premature." Adjust wording only if their reality differs.
+
+### B6 — Merge philosophy (confirm it matches reality)
+
+The merge section ships in CLAUDE.md prose. Confirm it matches how the team actually merges (branch-per-task, evidence carried, DoD stands in for CI until CI exists). Adapt wording to their reality; do not impose a process they will not follow.
+
+### B7 — Feedback loop (confirm understanding)
+
+Confirm the human understands: friction entries close with observed outcomes, harness changes carry a prediction, and friction about the kit's own templates ports back upstream. The four generic bets in HARNESS.md are seeded.
+
+---
+
+## Closing
+
+1. Run `verify` (the definition of done as now wired). Include its real output.
+2. Write `docs/plans/<today>-harness-pillars.md`: a seven-pillar table with **what thin layer was built** for each and **how to thicken it** (the `/harness-pillar` prompt or the deferred CI/observability suggestion). This replaces the old paste-prompt handoff — prompts survive only for genuinely-not-yet-buildable thickening.
+3. Commit the `harness-onboard` branch with all onboarding changes.
+4. End your report with:
+   - files created/adapted, and every `TODO(harness)` slot still open;
+   - the seven-pillar table (thin layer built + path to thicken);
+   - the three self-check answers: did I make any doc stale (fixed?); did I hit friction (logged?); what did I not attempt (say so).

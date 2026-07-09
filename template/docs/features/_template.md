@@ -24,6 +24,7 @@
 ## Invariants
 
 <Numbered, testable statements that must survive any change — this is the review checklist for the feature.>
+<Human-owned: an agent proposes these, the human confirms each. They encode domain truth, so they are never invented to fill the section.>
 
 1. <…>
 2. <…>

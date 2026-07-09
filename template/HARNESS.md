@@ -15,6 +15,22 @@ Kit version: see `docs/harness/kit-version`; update by re-running the kit's `ini
 - Context is routed, not maximized: a thin always-loaded core, a reading map to one relevant doc, and an explicit stop rule.
 - Every harness change is an experiment: it carries a prediction when made and gets closed with an observed outcome.
 
+## The seven pillars
+
+The harness is assessed along seven pillars. Onboarding co-builds a **thin default layer** for each — the thinnest version that actually works or is honestly stubbed — with the human in the loop. Thickening a pillar later is `/harness-pillar`'s job, escalated only when the friction log shows the thin layer is not enough.
+
+| Pillar | What it is | Thin default layer |
+| --- | --- | --- |
+| Knowledge in repo | Orientation lives in the repo, not in chat | Filled `CLAUDE.md`, a reading map pointing only at docs that exist, feature docs |
+| Mechanical enforcement | Machines, not memory, hold the line | One runnable `verify` chaining the definition of done; heavier CI/rules deferred |
+| Runtime legibility | The running system can be observed and reproduced | A short note: where logs go, how to reproduce a bug, what state matters |
+| Entropy control | Docs and rules stay lean; cruft is deleted | Friction log + "docs earn their existence, deleted when premature" |
+| Merge philosophy | How a change earns its way in | Branch-per-task, evidence carried, DoD stands in until CI exists |
+| Human role | Where human judgment is mandatory | Hard gates (generic four + domain gates from the interview) |
+| Feedback loop | The harness learns from its own friction | Friction log with prediction → outcome; kit-template friction ports upstream |
+
+A pillar left thin is not a gap to hide — its thin state and the path to thicken it are recorded at onboarding. Thickening is co-built, never auto-generated.
+
 ## Installed mechanisms
 
 | Mechanism | Where | Status |
@@ -26,10 +42,12 @@ Kit version: see `docs/harness/kit-version`; update by re-running the kit's `ini
 | Merge philosophy | `CLAUDE.md` | installed |
 | Feature docs (invariants, verify-as-command) | `docs/features/_template.md` | installed |
 | Feature-start workflow (intake → gate check → doc → done) | `.claude/commands/feature.md` | installed; optional to use |
+| Pillar thickening workflow | `.claude/commands/harness-pillar.md` | installed; run when a thin layer needs to grow |
 | Design records | `docs/plans/` | convention installed |
 | Friction log (prediction → outcome) | `docs/harness/friction.md` | installed |
-| Mechanical enforcement (CI, lint, architecture rules) | — | deferred → see the pillars plan in `docs/plans/` |
-| Runtime legibility (logs, state dumps, replay) | — | deferred → see the pillars plan in `docs/plans/` |
+| Definition-of-done runner (thin enforcement) | a `verify` entry point | TODO(harness): wired at onboarding (Stage B, pillar 3) |
+| Mechanical enforcement (CI, lint, architecture rules) | — | thin layer at onboarding; thicken via `/harness-pillar` |
+| Runtime legibility (logs, state dumps, replay) | — | thin note at onboarding; thicken via `/harness-pillar` |
 
 ## Open bets
 

@@ -4,7 +4,7 @@ argument-hint: [short description of the feature, optional]
 ---
 
 You are helping start a feature on a repo that runs the harness-kit harness.
-This command is **optional** and **generic**: it prescribes no development methodology of its own — it reads *this repo's* adapted `CLAUDE.md` and threads its existing rules (reading map, hard gates, definition of done, merge philosophy) into one path. Skip it for trivial changes; it earns its keep on features big enough to deserve a doc.
+This command is **optional** and **generic**: it prescribes no development methodology of its own — it reads *this repo's* adapted `CLAUDE.md` and threads its existing rules (reading map, hard gates, definition of done, merge philosophy) into one path. Whether a feature earns a doc is a hard rule, not a vibe — see Step 4.
 
 `$ARGUMENTS` may carry a short feature description; treat it as the opening request if present.
 
@@ -31,8 +31,20 @@ Read `CLAUDE.md`'s "Hard gates". If the feature crosses one — auth/session/cre
 
 ## Step 4 — Record intent in the right place
 
+**Does this feature need a doc?** Write one when **any** of these holds — otherwise skip straight to Step 5:
+
+- it has an invariant that must survive future changes, or
+- it touches more than one area of the system, or
+- it needs its own verify command beyond the global definition of done.
+
+If it needs a doc, pick where intent lives:
+
 - **Cross-cutting, gated, or design-heavy** (a real "why this shape" decision with rejected alternatives) → write a design record in `docs/plans/<date>-<name>.md` first, then link it from the feature doc.
 - **Otherwise** → create `docs/features/<kebab-name>.md` from [`docs/features/_template.md`](../../docs/features/_template.md), filled from Step 1: Scope, What it does, Invariants, How to verify. Leave genuine TBDs under "Open items" so nothing gets invented later.
+
+**Invariants and gate-adjacent statements are human-owned.** Propose them, then have the human confirm each before it is written — an invariant encodes domain truth you must not invent. Unknowns stay in "Open items"; they are not guessed.
+
+**Keep the feature findable.** If you created a feature doc, add or extend one line in `CLAUDE.md`'s "What to read for a task" so it routes to the new doc. Knowledge in the repo that the reading map doesn't index is knowledge no future agent will find.
 
 This doc is the deliverable of intake — it exists before implementation, and is updated in the same change that changes the feature.
 

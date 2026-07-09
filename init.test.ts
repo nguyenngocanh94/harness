@@ -39,6 +39,7 @@ const EXPECTED_FILES = [
   "docs/features/_template.md",
   ".claude/commands/harness-onboard.md",
   ".claude/commands/feature.md",
+  ".claude/commands/harness-pillar.md",
 ];
 
 describe("runInit", () => {

@@ -5,7 +5,7 @@ Onboard any repository onto an agent-development harness: the repo patterns prov
 The kit splits onboarding along the judgment line:
 
 - **`init.ts` (deterministic)** copies the skeleton — never overwrites, stamps a version, and tells you the one next step.
-- **`/harness-onboard` (agent, judgment)** adapts the skeleton to the repo: verified commands, domain gates via a human interview, a reading map that points only at docs that exist, and a pillar handoff for what onboarding must not invent.
+- **`/harness-onboard` (agent, judgment)** is a working session, not a form-fill: it discusses the repo's basics with you (purpose, stack, architecture), then walks all seven pillars and **co-builds a thin default layer** for each — verified commands, domain gates, a reading map pointing only at docs that exist, and a runnable definition of done. Thickening a pillar later is `/harness-pillar`'s job. Onboarding is slow on purpose.
 
 ## Install & onboard — one command
 
@@ -44,7 +44,9 @@ Overrides: `--repo=<git-url>` or `HARNESS_KIT_REPO` (fork/mirror), `--ref=<branc
 | `HARNESS.md` | the experiment map: principles, mechanism inventory, seeded bets, probe protocol |
 | `docs/harness/friction.md` | the learning loop — protocol header, zero entries |
 | `docs/features/_template.md` | per-feature doc template (invariants, verify-as-command) |
-| `.claude/commands/harness-onboard.md` | the adaptation step |
+| `.claude/commands/harness-onboard.md` | the onboarding session — discuss the basics, co-build a thin layer per pillar |
+| `.claude/commands/feature.md` | optional feature-start workflow (intake → gate check → doc → done) |
+| `.claude/commands/harness-pillar.md` | thicken one pillar past its thin layer, co-built with the human |
 | `docs/harness/kit-version` | stamp for update tracking (the only file init ever rewrites) |
 
 If `CLAUDE.md` or `HARNESS.md` already exist, init leaves them untouched and drops a `<name>.harness-kit` reference copy next to them; `/harness-onboard` merges and deletes it.
