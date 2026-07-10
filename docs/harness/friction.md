@@ -17,3 +17,10 @@ Friction: `/harness-onboard` on an empty repo filled the "what this project is" 
 Change: added phase 1b (a Socratic purpose interview run only when inventory can't establish purpose) and a whole-run rule forbidding invented purpose; recorded in `docs/plans/2026-07-07-greenfield-purpose-interview.md`; VERSION → 0.1.2.
 Prediction: onboarding an empty/near-empty repo now interviews the human for purpose instead of guessing, and skips the interview when the repo already states what it is.
 Outcome: open — confirm on the next real greenfield onboarding.
+Note: 2026-07-10 — the `order_service` greenfield onboarding ran on a stale 0.1.1 cache (see the 2026-07-10 entry), so it exercised the pre-fix workflow and neither confirms nor refutes this. Its CLAUDE.md stayed honest (slots left open), but gates were inferred from the repo name alone. The 0.4.0 re-onboarding of the same repo is the confirmation run.
+
+## 2026-07-10 — onboard.ts cache silently pinned users to kit 0.1.1
+Friction: a real onboarding (`binanceSmartWatch/order_service`) ran against kit 0.1.1 while the published repo was at 0.4.0. The cache's `git pull --ff-only --depth 1` cannot fast-forward once the shallow cache and the remote history disconnect, and the failure was swallowed as a one-line "offline?" note — so every run kept installing the old skeleton and the old (pre-interview, pre-co-build) onboarding workflow without anyone noticing.
+Change: `ensureKit` now updates by `fetch --depth 1` + `reset --hard FETCH_HEAD` (the cache is disposable, so hard reset is always safe), and a failed update warns loudly, naming the cached kit version and the cache path. Covered by two tests (diverged-history recovery, loud stale fallback).
+Prediction: a cache in any state converges to the published head on the next run; the only way to onboard with a stale kit is a genuinely unreachable remote, and that now prints a WARNING naming the stale version instead of an aside.
+Outcome: open — confirm on the next onboarding from a machine with an old cache.

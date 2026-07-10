@@ -6,13 +6,14 @@
  *   bun onboard.ts [target] [--force] [--repo=<git-url>] [--ref=<branch>]
  *
  * It ensures a fresh local clone of the kit repo (clone into a cache on first
- * run, fast-forward update afterwards; offline falls back to the cached copy),
+ * run, fetch + hard-reset to the remote head afterwards; offline falls back
+ * to the cached copy with a loud staleness warning),
  * then delegates to that clone's init.ts — which owns the actual install
  * contract (create-if-missing, never overwrite). This script never touches
  * the target directly.
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 
@@ -32,7 +33,7 @@ function git(args: string[], cwd?: string): GitResult {
   return { ok: result.status === 0, output };
 }
 
-/** Clone the kit into the cache, or fast-forward an existing cache. */
+/** Clone the kit into the cache, or reset an existing cache to the remote head. */
 export function ensureKit(
   repo: string,
   ref: string | undefined,
@@ -51,14 +52,41 @@ export function ensureKit(
     }
     return { updated: true, note: `cloned ${repo}` };
   }
-  const pull = git(["-C", cacheDir, "pull", "--ff-only", "--depth", "1"]);
-  if (!pull.ok) {
-    return {
-      updated: false,
-      note: "update failed — using the cached kit (offline?)",
-    };
+  // The cache is disposable and read-only, so update = fetch the remote head
+  // and hard-reset to it. A fast-forward pull cannot recover once the shallow
+  // cache and the remote history disconnect (rewrite, deepening gaps) — that
+  // silently pinned caches to old kit versions.
+  const fetch = git([
+    "-C",
+    cacheDir,
+    "fetch",
+    "--depth",
+    "1",
+    repo,
+    ref ?? "HEAD",
+  ]);
+  if (fetch.ok) {
+    const reset = git(["-C", cacheDir, "reset", "--hard", "FETCH_HEAD"]);
+    if (reset.ok) {
+      return { updated: true, note: "cache updated to the remote head" };
+    }
   }
-  return { updated: true, note: "cache up to date" };
+  const version = readCachedVersion(cacheDir);
+  return {
+    updated: false,
+    note:
+      `WARNING: could not update the kit cache — using a possibly STALE kit` +
+      `${version ? ` (version ${version})` : ""}. ` +
+      `Check your network, or delete ${cacheDir} and retry.`,
+  };
+}
+
+function readCachedVersion(cacheDir: string): string | null {
+  try {
+    return readFileSync(join(cacheDir, "VERSION"), "utf8").trim();
+  } catch {
+    return null;
+  }
 }
 
 export interface OnboardArgs {

@@ -1,5 +1,13 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { ensureKit, OnboardError, parseArgs, runOnboard } from "./onboard";
@@ -64,7 +72,62 @@ describe("ensureKit", () => {
       ensureKit("https://example.invalid/nope.git", undefined, cache),
     ).toThrow(OnboardError);
   });
+
+  test("recovers a cache whose history diverged from the remote", () => {
+    const remote = makeKitRemote("1.0.0");
+    const cache = join(scratch(), "kit-cache");
+    ensureKit(remote, undefined, cache);
+    expect(readFileSync(join(cache, "VERSION"), "utf8").trim()).toBe("1.0.0");
+
+    // Upstream history rewritten (rebase/force-push): a fast-forward can
+    // never succeed again, which is exactly how caches got pinned at 0.1.1.
+    writeFileSync(join(remote, "VERSION"), "2.0.0\n");
+    gitIn(remote, ["add", "VERSION"]);
+    gitIn(remote, ["commit", "--amend", "-q", "-m", "rewritten"]);
+
+    const result = ensureKit(remote, undefined, cache);
+    expect(result.updated).toBe(true);
+    expect(readFileSync(join(cache, "VERSION"), "utf8").trim()).toBe("2.0.0");
+  });
+
+  test("failed update falls back loudly, naming the cached kit version", () => {
+    const remote = makeKitRemote("1.0.0");
+    const cache = join(scratch(), "kit-cache");
+    ensureKit(remote, undefined, cache);
+
+    rmSync(remote, { recursive: true, force: true }); // remote unreachable
+
+    const result = ensureKit(remote, undefined, cache);
+    expect(result.updated).toBe(false);
+    expect(result.note).toContain("1.0.0");
+    expect(result.note.toLowerCase()).toContain("stale");
+  });
 });
+
+function gitIn(dir: string, args: string[]): void {
+  const result = spawnSync(
+    "git",
+    ["-C", dir, "-c", "user.email=test@test", "-c", "user.name=test", ...args],
+    { encoding: "utf8" },
+  );
+  if (result.status !== 0) {
+    throw new Error(
+      `git ${args.join(" ")} failed:\n${result.stdout}${result.stderr}`,
+    );
+  }
+}
+
+/** A throwaway upstream kit repo with a single commit at the given version. */
+function makeKitRemote(version: string): string {
+  const dir = join(scratch(), "kit-remote");
+  mkdirSync(dir);
+  gitIn(".", ["init", "-q", dir]);
+  writeFileSync(join(dir, "VERSION"), `${version}\n`);
+  writeFileSync(join(dir, "init.ts"), "// stub kit entry point\n");
+  gitIn(dir, ["add", "."]);
+  gitIn(dir, ["commit", "-q", "-m", `kit ${version}`]);
+  return dir;
+}
 
 describe("runOnboard end to end", () => {
   test("bootstraps the kit and installs the skeleton into a target", () => {
