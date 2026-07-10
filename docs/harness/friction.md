@@ -24,3 +24,9 @@ Friction: a real onboarding (`binanceSmartWatch/order_service`) ran against kit 
 Change: `ensureKit` now updates by `fetch --depth 1` + `reset --hard FETCH_HEAD` (the cache is disposable, so hard reset is always safe), and a failed update warns loudly, naming the cached kit version and the cache path. Covered by two tests (diverged-history recovery, loud stale fallback).
 Prediction: a cache in any state converges to the published head on the next run; the only way to onboard with a stale kit is a genuinely unreachable remote, and that now prints a WARNING naming the stale version instead of an aside.
 Outcome: open — confirm on the next onboarding from a machine with an old cache.
+
+## 2026-07-10 — stale command wrappers survive migration and shadow the new workflow
+Friction: re-running init 0.4.0 on a repo onboarded by kit 0.1.1 (`order_service`) correctly skipped `.claude/commands/harness-onboard.md` (never-overwrite), but that file is the *old workflow inlined*, not a thin wrapper — so `/harness-onboard` in the migrated repo would still run the pre-interview, pre-co-build workflow even though `docs/harness/workflows/onboard.md` (new) now exists beside it. The migration path moves the manual (CLAUDE.md → AGENTS.md) but says nothing about kit-owned command bodies.
+Change: none yet — needs a design decision: either init treats command wrappers as kit-owned (a contract change requiring a decision record), or it drops `.harness-kit` reference copies beside differing command files and the onboarding migration step gains "replace old-kit command wrappers with the thin ones." For `order_service` the wrapper is being replaced by hand during its 0.4.0 re-onboarding.
+Prediction: (pending change) after the fix, a migrated repo's slash commands always dispatch to the current workflow docs.
+Outcome: open — blocked on the design decision.
