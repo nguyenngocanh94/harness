@@ -51,6 +51,8 @@ Go through the pillars in order. For each: **explain what it is → discuss what
 
 **Migrate an old CLAUDE.md-only repo.** If this repo was onboarded by an older kit it has a filled `CLAUDE.md` and no `AGENTS.md` (init left `AGENTS.md.harness-kit` beside it). Move the repo's `CLAUDE.md` content into `AGENTS.md` (merging the template structure from `AGENTS.md.harness-kit`), then replace `CLAUDE.md` with a one-line bridge whose sole content is `@AGENTS.md`, and delete `AGENTS.md.harness-kit`. AGENTS.md is now the single source of truth; the bridge keeps Claude Code working.
 
+**Replace stale command wrappers.** If any `.claude/commands/<name>.md.harness-kit` exists, the repo's command file differs from the current kit's wrapper. Command wrappers are kit-owned dispatch shims: their only job is to point at the matching `docs/harness/workflows/` body. An old-kit command file carries an entire obsolete workflow inline and must not survive — it silently shadows the current workflow doc. Replace the command file's content with the reference copy's, confirm with the human before discarding anything they deliberately added to the wrapper (repo-specific additions belong in the workflow doc or AGENTS.md, not the shim), then delete the `.harness-kit` file.
+
 ### B1 — Knowledge in repo (spend the most time here)
 
 The richest pillar; everything else routes through it.

@@ -49,7 +49,7 @@ Overrides: `--repo=<git-url>` or `HARNESS_KIT_REPO` (fork/mirror), `--ref=<branc
 | `.claude/commands/{harness-onboard,feature,harness-pillar,harness-review}.md` | thin Claude Code entry points that delegate to the workflow bodies |
 | `docs/harness/kit-version` | stamp for update tracking (the only file init ever rewrites) |
 
-If `AGENTS.md` or `HARNESS.md` already exist, init leaves them untouched and drops a `<name>.harness-kit` reference copy next to them; onboarding merges and deletes it. A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and onboarding moves the content into `AGENTS.md` and installs the bridge.
+If `AGENTS.md` or `HARNESS.md` already exist, init leaves them untouched and drops a `<name>.harness-kit` reference copy next to them; onboarding merges and deletes it. The same applies to `.claude/commands/*.md` wrappers that differ from the template — but those are kit-owned dispatch shims, so onboarding *replaces* a stale one with the reference instead of merging (an old-kit wrapper carries an obsolete workflow inline and would shadow the current workflow body). A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and onboarding moves the content into `AGENTS.md` and installs the bridge.
 
 ## Updating an onboarded repo
 

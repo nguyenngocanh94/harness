@@ -131,6 +131,48 @@ describe("runInit", () => {
     expect(report.created).not.toContain("CLAUDE.md");
   });
 
+  test("stale command wrapper is untouched and gets a reference copy", () => {
+    const dir = scratch();
+    // A repo onboarded by kit 0.1.1: the command file holds the old workflow
+    // inline, not the current thin dispatch wrapper.
+    const oldWrapper = "# Old onboarding workflow, inlined by kit 0.1.1\n";
+    mkdirSync(join(dir, ".claude/commands"), { recursive: true });
+    writeFileSync(join(dir, ".claude/commands/harness-onboard.md"), oldWrapper);
+    const report = runInit(dir);
+    expect(
+      readFileSync(join(dir, ".claude/commands/harness-onboard.md"), "utf8"),
+    ).toBe(oldWrapper);
+    expect(report.skipped).toContain(".claude/commands/harness-onboard.md");
+    expect(report.references).toContain(
+      ".claude/commands/harness-onboard.md.harness-kit",
+    );
+    // The reference is the current template wrapper, ready to swap in.
+    expect(
+      readFileSync(
+        join(dir, ".claude/commands/harness-onboard.md.harness-kit"),
+        "utf8",
+      ),
+    ).toBe(
+      readFileSync(
+        join(import.meta.dir, "template/.claude/commands/harness-onboard.md"),
+        "utf8",
+      ),
+    );
+
+    const second = runInit(dir);
+    expect(second.references).toEqual([]);
+  });
+
+  test("command wrapper identical to the template gets no reference copy", () => {
+    const dir = scratch();
+    runInit(dir);
+    const second = runInit(dir);
+    expect(second.references).toEqual([]);
+    expect(
+      existsSync(join(dir, ".claude/commands/harness-onboard.md.harness-kit")),
+    ).toBe(false);
+  });
+
   test("non-merge files are skipped without reference copies", () => {
     const dir = scratch();
     mkdirSync(join(dir, "docs/harness"), { recursive: true });
