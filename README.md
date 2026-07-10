@@ -15,7 +15,7 @@ Requirements on any machine: `bun` and `git`. Then, from anywhere:
 curl -fsSL https://raw.githubusercontent.com/nguyenngocanh94/harness/main/onboard.ts | bun - /path/to/target-repo
 ```
 
-The first run clones the kit into `~/.cache/harness-kit`; later runs fast-forward it, so every machine installs the latest kit automatically (offline falls back to the cached copy). When it finishes, open the target repo in your agent tool and run the onboarding workflow (`/harness-onboard` in Claude Code; other tools read the same body from `docs/harness/workflows/onboard.md`) — the skeleton is installed, the adaptation happens there.
+The first run clones the kit into `~/.cache/harness-kit`; later runs reset it to the published head, so every machine installs the latest kit automatically (offline falls back to the cached copy with a staleness warning). When it finishes, open the target repo in your agent tool and run the onboarding workflow (`/harness-onboard` in Claude Code; other tools read the same body from `docs/harness/workflows/onboard.md`) — the skeleton is installed, the adaptation happens there.
 
 Convenience alias for your dotfiles:
 
