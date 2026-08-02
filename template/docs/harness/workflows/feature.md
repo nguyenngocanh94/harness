@@ -24,7 +24,7 @@ Read `AGENTS.md`'s "What to read for a task" and load **only** the doc it routes
 
 ## Step 3 — Gate check (stop here if it applies)
 
-Read `AGENTS.md`'s "Hard gates". If the feature crosses one — auth/session/credential behavior, a schema or data migration, deleting user data, weakening validation/tests/the definition of done, or a domain gate — **stop and confirm with the human**, and a decision record in `docs/plans/` is required *before* any code.
+Read `AGENTS.md`'s "Hard gates" and `docs/harness/risk-profile.md`. If the feature crosses one — auth/session/credential behavior, a schema or data migration, deleting user data, weakening validation/tests/the definition of done, or a domain gate — **stop and confirm with the human**, and a decision record in `docs/plans/` is required *before* any code. Also stop when an applicable risk-profile prerequisite is still missing; implement or explicitly resolve that prerequisite before feature breadth.
 
 ## Step 4 — Record intent in the right place
 

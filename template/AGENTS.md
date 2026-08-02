@@ -46,6 +46,8 @@ Stop and confirm with the human before:
 Crossing a gate requires a decision record in `docs/plans/`.
 Bypassing a gate that should have stopped you is harness friction — log it.
 
+The project's exposure, non-negotiable baselines, and evidence requirements live in [`docs/harness/risk-profile.md`](./docs/harness/risk-profile.md). A risk-driven prerequisite is not deferred merely because the harness normally starts thin.
+
 ## Commands
 
 TODO(harness): the real commands — install, dev, test, lint, typecheck/build. Every command listed here must have been executed successfully during onboarding.

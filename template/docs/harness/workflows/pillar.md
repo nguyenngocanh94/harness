@@ -8,12 +8,12 @@ Principles for this workflow:
 
 - **One pillar per run.** Scope is a single pillar; do not drift into others.
 - **Co-build, don't auto-generate.** Thickening changes real infrastructure (CI, dependency rules, logging) — every decision is confirmed with the human, one question at a time.
-- **Thicken only what friction justifies.** The kit's rule is that a rule escalates to mechanical enforcement only when the thin layer is shown insufficient. If there's no evidence the thin layer is failing, say so and confirm the human still wants to thicken.
+- **Thicken only what evidence justifies.** Repeated friction is one source. The confirmed risk profile, an incident, an external obligation, or a known high-impact failure mode are equally valid evidence and may make a control prerequisite before friction occurs. If none applies, say so and confirm the human still wants to thicken.
 - Work on a branch; one commit at the end, carrying evidence.
 
 ## Step 1 — Pick the pillar and read its current state
 
-If a pillar was named, use it; otherwise ask which one. Read that pillar's row in HARNESS.md and its entry in the onboarding pillars doc: what thin layer exists today and what "thicker" was meant to mean. Confirm your understanding with the human before proposing anything.
+If a pillar was named, use it; otherwise ask which one. Read that pillar's row in HARNESS.md, its credible-when criterion, the risk profile, and its entry in the onboarding pillars doc: what thin layer exists today and what "thicker" was meant to mean. Confirm your understanding with the human before proposing anything.
 
 ## Step 2 — Gate check
 

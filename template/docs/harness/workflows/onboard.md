@@ -10,7 +10,7 @@ Rules that govern the whole run:
 - **Never invent product facts.** What the project *is* — its purpose and behavior — lives in the human or in the code, never in a guess. If the repo does not tell you, you ask (Stage A). You never fill a slot with a plausible-sounding description.
 - **Co-build the harness, don't defer it.** Every pillar gets a thin layer built *now*, with the human confirming each decision. "Needs human buy-in" is not a reason to defer — it is the reason to build it together in this session. Only thickening beyond thin (full CI, architecture rules, observability infra) is deferred, and it goes to the pillar-thickening workflow, not a paste-prompt.
 - **Facts only in what you write.** Every command you record must have been executed by you, now, successfully. Every doc you point at must exist. Every stack claim must be verifiable.
-- **Thin means thin.** Build the thinnest version that works or is honestly stubbed. Do not scaffold CI, heavy lint rules, or logging infrastructure unprompted — those are `docs/harness/workflows/pillar.md` territory.
+- **Thin is risk-adjusted.** Build the thinnest version that works for this repo's exposure. Do not scaffold CI, heavy lint rules, or logging infrastructure unprompted, but do not defer a control that the confirmed risk profile makes a prerequisite. Route prerequisite implementation through `docs/harness/workflows/pillar.md` before feature breadth.
 - Ask one focused question at a time, building on each answer — never dump a form. Stage A and the gates/legibility steps are conversations.
 - Work on a branch (`harness-onboard`); one commit at the end, carrying evidence.
 - Friction you hit belongs in `docs/harness/friction.md` — this onboarding is the repo's first probe.
@@ -19,7 +19,7 @@ Rules that govern the whole run:
 
 ## Stage A — Establish the basics (with the human)
 
-Goal: agree on the three things the whole harness hangs off, before building anything. Do not proceed to Stage B until purpose, stack, and (for an existing project) architecture are written and the human has agreed to them.
+Goal: agree on the things the whole harness hangs off before building anything: purpose, stack, architecture, and risk posture. Do not proceed to Stage B until they are written and the human has agreed to them.
 
 ### A1 — Inventory (read-only)
 
@@ -41,6 +41,24 @@ Assess the key question: **does the repo tell you what it is?** Existing source,
 
 Stop Stage A when you can write an honest purpose, the stack (or "intended, unconfirmed"), and an architecture pointer (or "none yet"). Name anything still unknown; do not guess it.
 
+### A3 — Agree on risk posture and non-negotiable baselines
+
+Read `docs/harness/risk-profile.md`. Classify the repo through a conversation, one exposure at a time; do not infer risk from the repo name alone:
+
+1. Does it hold personal, financial, health, identity, credential, regulated, confidential, or otherwise sensitive data?
+2. Is it multi-user or multi-tenant, and can one identity reach another identity's state?
+3. Can it move money, send external messages, publish, delete, execute code, change permissions, or create another irreversible/external effect?
+4. Which uptime, audit, retention, deletion, geographic, contractual, or compliance obligations already exist?
+5. What is the credible blast radius of a mistake today — local/reversible, shared/internal, or external/high-impact?
+
+Record evidence, unknowns, and the agreed posture:
+
+- **baseline** — local/reversible impact; prompt-level gates may be an honest thin start;
+- **elevated** — sensitive data, tenant boundaries, credentials, external effects, or material operational impact; relevant controls become prerequisites;
+- **critical** — safety-critical, regulated high-consequence, money movement, privileged execution, or similarly severe impact; specialist review and explicit assurance requirements are prerequisites.
+
+The labels guide the conversation; they are not compliance certification. For every applicable exposure, name a non-negotiable baseline, its evidence, and whether it exists now. If an elevated/critical prerequisite is missing, add it to the pillars plan and block feature breadth until it is built or the human explicitly changes the risk decision in a design record.
+
 ---
 
 ## Stage B — Walk each pillar and co-build its thin default layer
@@ -48,6 +66,8 @@ Stop Stage A when you can write an honest purpose, the stack (or "intended, unco
 Go through the pillars in order. For each: **explain what it is → discuss what this repo needs → build the thinnest working version → verify → record.** The human confirms every decision; nothing is wired silently. Fill the matching `TODO(harness)` slots as you go.
 
 **Merge existing manuals.** If `AGENTS.md.harness-kit` or `HARNESS.md.harness-kit` exist, the repo had its own versions: merge the reference copy's harness sections into the existing file — preserve the repo's own content, don't duplicate overlapping guidance — then delete the `.harness-kit` file.
+
+**Merge updated workflow bodies.** If `docs/harness/workflows/<name>.md.harness-kit` exists, the published tool-neutral workflow changed since this repo adapted its copy. Review and merge the reference into the existing workflow, preserving deliberate repo-specific guidance, then delete the reference. Never leave the reference unreviewed: command wrappers dispatch to the existing workflow body, so an old body silently keeps old behavior.
 
 **Migrate an old CLAUDE.md-only repo.** If this repo was onboarded by an older kit it has a filled `CLAUDE.md` and no `AGENTS.md` (init left `AGENTS.md.harness-kit` beside it). Move the repo's `CLAUDE.md` content into `AGENTS.md` (merging the template structure from `AGENTS.md.harness-kit`), then replace `CLAUDE.md` with a one-line bridge whose sole content is `@AGENTS.md`, and delete `AGENTS.md.harness-kit`. AGENTS.md is now the single source of truth; the bridge keeps Claude Code working.
 
@@ -70,11 +90,13 @@ A gate is a promise about what an agent must not touch alone. The four generic g
 Discuss domain gates as a **conversation, not a single question**. Walk the human through the categories, one at a time: what here is irreversible, externally binding, money-moving, destructive, or compliance-bound? Turn each answer into a concrete gate line phrased as a stop-and-confirm trigger the agent can recognize. Replace the TODO with those lines.
 Confirm the escalation rule: crossing a gate needs a decision record in `docs/plans/`; bypassing one that should have stopped you is friction to log.
 
+Cross-check every gate against `docs/harness/risk-profile.md`: every non-negotiable baseline must be owned either by a mechanical check, a human gate with a named decision owner, or an explicit prerequisite plan. “We will remember” is not ownership.
+
 ### B3 — Mechanical enforcement (thin: the verify runner)
 
 The one genuinely new build. Wire the definition-of-done commands into **one runnable `verify` entry point** (a package script, Makefile target, or shell script — whatever fits the stack) that runs typecheck → lint → test in order. Run it; it must pass. "Done" is now a command, not a paragraph — record it in AGENTS.md's Verification section.
 If a step isn't wired in this repo, say so explicitly and leave it out of `verify` rather than faking it; note the gap for the pillar-thickening workflow.
-Do **not** create CI pipelines or dependency/architecture rules here — those are thickening. When you note the gap, record the stack-appropriate suggestion for later: TS/JS → Biome + dependency-cruiser; PHP → PHPStan + Deptrac; Go → golangci-lint + depguard; Kotlin → detekt + Konsist; Rust → clippy + cargo-deny; Python → ruff + import-linter.
+Do **not** create CI pipelines or dependency/architecture rules here unless the confirmed risk profile makes them prerequisites — otherwise those are thickening. When you note the gap, record the stack-appropriate suggestion for later: TS/JS → Biome + dependency-cruiser; PHP → PHPStan + Deptrac; Go → golangci-lint + depguard; Kotlin → detekt + Konsist; Rust → clippy + cargo-deny; Python → ruff + import-linter.
 
 ### B4 — Runtime legibility (thin: a note, not infra)
 
@@ -98,7 +120,7 @@ Confirm the human understands: friction entries close with observed outcomes, ha
 ## Closing
 
 1. Run `verify` (the definition of done as now wired). Include its real output.
-2. Write `docs/plans/<today>-harness-pillars.md`: a seven-pillar table with **what thin layer was built** for each and **how to thicken it** (the pillar-thickening prompt or the deferred CI/observability suggestion). This replaces the old paste-prompt handoff — prompts survive only for genuinely-not-yet-buildable thickening.
+2. Write `docs/plans/<today>-harness-pillars.md`: a seven-pillar table with **what thin layer was built**, **why it satisfies the credible-when criterion**, and **how to thicken it**. List risk-profile prerequisites separately from optional thickening; unresolved prerequisites block feature breadth.
 3. Commit the `harness-onboard` branch with all onboarding changes.
 4. End your report with:
    - files created/adapted, and every `TODO(harness)` slot still open;
