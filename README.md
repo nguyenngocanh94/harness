@@ -65,3 +65,5 @@ Every onboarded repo keeps its own friction log. Entries about the kit's templat
 The patterns come from a live experiment (signalv2) whose bets are **still open** — hub-and-spoke routing, thin-manual sufficiency, prompt-level gates, and prediction honesty are being measured, not proven. Each onboarding is itself a probe; expect to feed friction back.
 
 Risk changes the meaning of “thin.” A low-impact library may start with prompt-level gates, while a multi-tenant system handling financial, health, identity, credential, or other sensitive data needs mechanical controls before feature breadth. Onboarding records that posture in `docs/harness/risk-profile.md` and makes risk-driven prerequisites explicit rather than waiting for friction to prove the obvious.
+
+Onboarding also records a scope ceiling. It stops after the harness or runnable foundation by default; product-feature code begins only when the human explicitly names that feature and routes it through the feature workflow.
