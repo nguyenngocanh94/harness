@@ -11,6 +11,7 @@ Rules that govern the whole run:
 - **Co-build the harness, don't defer it.** Every pillar gets a thin layer built *now*, with the human confirming each decision. "Needs human buy-in" is not a reason to defer — it is the reason to build it together in this session. Only thickening beyond thin (full CI, architecture rules, observability infra) is deferred, and it goes to the pillar-thickening workflow, not a paste-prompt.
 - **Facts only in what you write.** Every command you record must have been executed by you, now, successfully. Every doc you point at must exist. Every stack claim must be verifiable.
 - **Thin is risk-adjusted.** Build the thinnest version that works for this repo's exposure. Do not scaffold CI, heavy lint rules, or logging infrastructure unprompted, but do not defer a control that the confirmed risk profile makes a prerequisite. Route prerequisite implementation through `docs/harness/workflows/pillar.md` before feature breadth.
+- **Onboarding has a scope ceiling.** By default this workflow installs and adapts the harness plus the minimum runnable repository foundation; it does not begin product-feature implementation. Before creating feature-specific domain code, schemas, endpoints, UI flows, or MCP tools, the human must explicitly confirm that the current run includes the first feature. Otherwise stop after the closing evidence and route later feature work through `docs/harness/workflows/feature.md`.
 - Ask one focused question at a time, building on each answer — never dump a form. Stage A and the gates/legibility steps are conversations.
 - Work on a branch (`harness-onboard`); one commit at the end, carrying evidence.
 - Friction you hit belongs in `docs/harness/friction.md` — this onboarding is the repo's first probe.
@@ -40,6 +41,8 @@ Assess the key question: **does the repo tell you what it is?** Existing source,
   Record the result as **stated intent**, not verified fact — the code that proves it doesn't exist yet. Intended-stack answers go to the pillars notes as decisions to confirm; the AGENTS.md stack slot stays open until real manifests back it.
 
 Stop Stage A when you can write an honest purpose, the stack (or "intended, unconfirmed"), and an architecture pointer (or "none yet"). Name anything still unknown; do not guess it.
+
+Record the scope ceiling for this run: `harness only`, `harness + runnable foundation`, or `harness + explicitly named first feature`. The third option requires the human to name and confirm that feature; a broad request to “build the project” does not silently authorize feature breadth during onboarding.
 
 ### A3 — Agree on risk posture and non-negotiable baselines
 
@@ -126,3 +129,5 @@ Confirm the human understands: friction entries close with observed outcomes, ha
    - files created/adapted, and every `TODO(harness)` slot still open;
    - the seven-pillar table (thin layer built + path to thicken);
    - the three self-check answers: did I make any doc stale (fixed?); did I hit friction (logged?); what did I not attempt (say so).
+
+If the recorded scope ceiling is `harness only` or `harness + runnable foundation`, stop here. Do not continue into product-feature code in the same run.
