@@ -44,16 +44,17 @@ Overrides: `--repo=<git-url>` or `HARNESS_KIT_REPO` (fork/mirror), `--ref=<branc
 | `CLAUDE.md` | bridge to `AGENTS.md` (symlink, or an `@AGENTS.md` shim) so Claude Code reads the manual too — created by init |
 | `HARNESS.md` | the experiment map: principles, the seven pillars, mechanism inventory, seeded bets, probe protocol |
 | `docs/harness/friction.md` | the learning loop — protocol header, zero entries |
+| `docs/harness/risk-profile.md` | risk-aware onboarding record — exposure, non-negotiable baselines, and evidence required before feature work |
 | `docs/features/_template.md` | per-feature doc template (invariants, verify-as-command) |
 | `docs/harness/workflows/{onboard,feature,pillar,review}.md` | tool-neutral workflow bodies — the single source any agent follows |
 | `.claude/commands/{harness-onboard,feature,harness-pillar,harness-review}.md` | thin Claude Code entry points that delegate to the workflow bodies |
 | `docs/harness/kit-version` | stamp for update tracking (the only file init ever rewrites) |
 
-If `AGENTS.md` or `HARNESS.md` already exist, init leaves them untouched and drops a `<name>.harness-kit` reference copy next to them; onboarding merges and deletes it. The same applies to `.claude/commands/*.md` wrappers that differ from the template — but those are kit-owned dispatch shims, so onboarding *replaces* a stale one with the reference instead of merging (an old-kit wrapper carries an obsolete workflow inline and would shadow the current workflow body). A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and onboarding moves the content into `AGENTS.md` and installs the bridge.
+If `AGENTS.md`, `HARNESS.md`, or a tool-neutral workflow body already exists, init leaves it untouched and drops a `<name>.harness-kit` reference copy next to it when the published template differs; onboarding merges and deletes the reference. The same applies to `.claude/commands/*.md` wrappers — but those are kit-owned dispatch shims, so onboarding *replaces* a stale one with the reference instead of merging (an old-kit wrapper can shadow the current workflow body). A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and onboarding moves the content into `AGENTS.md` and installs the bridge.
 
 ## Updating an onboarded repo
 
-Re-run `init.ts` — it copies files added by newer kit versions, refreshes the stamp, and touches nothing else. Template changes always bump `VERSION`.
+Re-run `init.ts` — it copies files added by newer kit versions, creates merge references for changed manuals/workflows, refreshes the stamp, and never overwrites adapted content. Template changes always bump `VERSION`.
 
 ## The feedback loop
 
@@ -62,3 +63,5 @@ Every onboarded repo keeps its own friction log. Entries about the kit's templat
 ## Maturity — honest note
 
 The patterns come from a live experiment (signalv2) whose bets are **still open** — hub-and-spoke routing, thin-manual sufficiency, prompt-level gates, and prediction honesty are being measured, not proven. Each onboarding is itself a probe; expect to feed friction back.
+
+Risk changes the meaning of “thin.” A low-impact library may start with prompt-level gates, while a multi-tenant system handling financial, health, identity, credential, or other sensitive data needs mechanical controls before feature breadth. Onboarding records that posture in `docs/harness/risk-profile.md` and makes risk-driven prerequisites explicit rather than waiting for friction to prove the obvious.

@@ -6,10 +6,10 @@
  *   create-if-missing, never overwrite, never merge. Merging is the
  *   onboarding workflow's job. The only writes beyond create-if-missing:
  *   - docs/harness/kit-version is always (re)stamped;
- *   - when a merge-worthy file (AGENTS.md, HARNESS.md) or a kit-owned command
- *     wrapper (.claude/commands/*.md) already exists and differs from the
- *     template, a one-time `<name>.harness-kit` reference copy is dropped
- *     beside it;
+ *   - when a merge-worthy manual (AGENTS.md, HARNESS.md), tool-neutral
+ *     workflow body, or kit-owned command wrapper already exists and differs
+ *     from the template, a one-time `<name>.harness-kit` reference copy is
+ *     dropped beside it;
  *   - a CLAUDE.md bridge (a symlink to AGENTS.md, or an `@AGENTS.md` shim
  *     when symlinks are unavailable) is created only when the target has no
  *     CLAUDE.md, so Claude Code — which ignores AGENTS.md — reads the manual.
@@ -41,16 +41,21 @@ const CLAUDE_BRIDGE = "CLAUDE.md";
 const CLAUDE_SHIM = "@AGENTS.md\n";
 const MERGE_REFERENCE_FILES = new Set([CANONICAL_MANUAL, "HARNESS.md"]);
 const COMMANDS_DIR = join(".claude", "commands");
+const WORKFLOWS_DIR = join("docs", "harness", "workflows");
 
 /**
  * Files that get a one-time `<name>.harness-kit` reference copy when the
- * existing file differs from the template: merge-worthy manuals (the human
- * merges), and kit-owned command wrappers (the onboarding workflow replaces
- * stale ones so an old inlined workflow cannot shadow the current
- * docs/harness/workflows/ body).
+ * existing file differs from the template: merge-worthy manuals and workflow
+ * bodies (the human merges), and kit-owned command wrappers (the onboarding
+ * workflow replaces stale ones so an old inlined workflow cannot shadow the
+ * current docs/harness/workflows/ body).
  */
 function wantsReferenceCopy(rel: string): boolean {
-  return MERGE_REFERENCE_FILES.has(rel) || dirname(rel) === COMMANDS_DIR;
+  return (
+    MERGE_REFERENCE_FILES.has(rel) ||
+    dirname(rel) === COMMANDS_DIR ||
+    dirname(rel) === WORKFLOWS_DIR
+  );
 }
 
 export interface InitReport {

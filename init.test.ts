@@ -39,6 +39,7 @@ const EXPECTED_FILES = [
   "AGENTS.md",
   "HARNESS.md",
   "docs/harness/friction.md",
+  "docs/harness/risk-profile.md",
   "docs/features/_template.md",
   "docs/harness/workflows/onboard.md",
   "docs/harness/workflows/feature.md",
@@ -171,6 +172,22 @@ describe("runInit", () => {
     expect(
       existsSync(join(dir, ".claude/commands/harness-onboard.md.harness-kit")),
     ).toBe(false);
+  });
+
+  test("changed workflow body is untouched and gets a merge reference", () => {
+    const dir = scratch();
+    runInit(dir);
+    const workflow = join(dir, "docs/harness/workflows/onboard.md");
+    const adapted = "# Repo-specific onboarding\n";
+    writeFileSync(workflow, adapted);
+
+    const report = runInit(dir);
+
+    expect(readFileSync(workflow, "utf8")).toBe(adapted);
+    expect(report.references).toContain(
+      "docs/harness/workflows/onboard.md.harness-kit",
+    );
+    expect(existsSync(`${workflow}.harness-kit`)).toBe(true);
   });
 
   test("non-merge files are skipped without reference copies", () => {
