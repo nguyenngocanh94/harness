@@ -190,17 +190,31 @@ describe("runInit", () => {
     expect(existsSync(`${workflow}.harness-kit`)).toBe(true);
   });
 
-  test("non-merge files are skipped without reference copies", () => {
+  test("any differing template file gets a reference copy, identical ones none", () => {
     const dir = scratch();
     mkdirSync(join(dir, "docs/harness"), { recursive: true });
     writeFileSync(join(dir, "docs/harness/friction.md"), "existing log\n");
     const report = runInit(dir);
+    // The repo's own log is never touched …
     expect(report.skipped).toContain("docs/harness/friction.md");
-    expect(existsSync(join(dir, "docs/harness/friction.md.harness-kit"))).toBe(
-      false,
-    );
     expect(readFileSync(join(dir, "docs/harness/friction.md"), "utf8")).toBe(
       "existing log\n",
     );
+    // … but the current protocol arrives beside it, once.
+    expect(report.references).toContain("docs/harness/friction.md.harness-kit");
+    expect(
+      readFileSync(join(dir, "docs/harness/friction.md.harness-kit"), "utf8"),
+    ).toBe(
+      readFileSync(
+        join(import.meta.dir, "template/docs/harness/friction.md"),
+        "utf8",
+      ),
+    );
+    const second = runInit(dir);
+    expect(second.references).toEqual([]);
+    // Files identical to the template never get a reference.
+    expect(
+      existsSync(join(dir, "docs/harness/risk-profile.md.harness-kit")),
+    ).toBe(false);
   });
 });

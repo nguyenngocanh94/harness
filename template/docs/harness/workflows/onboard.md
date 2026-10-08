@@ -76,6 +76,8 @@ Go through the pillars in order. For each: **explain what it is → discuss what
 
 **Replace stale command wrappers.** If any `.claude/commands/<name>.md.harness-kit` exists, the repo's command file differs from the current kit's wrapper. Command wrappers are kit-owned dispatch shims: their only job is to point at the matching `docs/harness/workflows/` body. An old-kit command file carries an entire obsolete workflow inline and must not survive — it silently shadows the current workflow doc. Replace the command file's content with the reference copy's, confirm with the human before discarding anything they deliberately added to the wrapper (repo-specific additions belong in the workflow doc or AGENTS.md, not the shim), then delete the `.harness-kit` file.
 
+**Merge other updated template files.** Any other `<name>.harness-kit` (for example `docs/harness/friction.md.harness-kit`, `docs/harness/risk-profile.md.harness-kit`, `docs/features/_template.md.harness-kit`) means the kit changed that file's protocol or template since this repo adapted its copy. Merge the protocol change into the repo's file — never its content: a friction log keeps every entry, a risk profile keeps every classification — then delete the reference. Confirm with the human when a protocol change alters how existing entries are read.
+
 ### B1 — Knowledge in repo (spend the most time here)
 
 The richest pillar; everything else routes through it.

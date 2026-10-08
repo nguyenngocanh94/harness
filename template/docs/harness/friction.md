@@ -5,7 +5,7 @@ Append an entry when the harness itself fails you: a missing rule, a stale or mi
 
 Protocol:
 
-- One entry per friction event, newest at the bottom; live entries are append-only — edit only the `Outcome` field.
+- One entry per friction event, newest at the bottom; live entries are append-only — later sessions edit only `Change` (when acting on the entry) and `Outcome` (when closing it).
 - A closed entry is archived by `/harness-review` once its learning lives in a rule (or one review cycle after it closed): it collapses to one line under `## Archive` below, and the full text lives on in git history. The human confirms the archive list; nothing auto-archives.
 - Live log budget: ~120 lines (adjust at onboarding). Crossing it is the signal to run `/harness-review`, not to write shorter friction.
 - Keep every field to one line; if it needs more, it is a design discussion, not a log entry.
