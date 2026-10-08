@@ -26,10 +26,11 @@ Stop and confirm with the human before:
 - `bun test` — CLI behavior suite (temp-dir scenarios).
 - `bun run typecheck` — `tsc --noEmit`.
 - `bun run lint` — Biome.
+- `bun run harness-check` — the mechanical half of `/harness-review` (open friction count, live-log budget, feature-doc budget, dangling reading-map links). Detects only; nonzero exit means run the review.
 
 ## Verification (definition of done)
 
-Run and pass, in order: `bun run typecheck`, `bun run lint`, `bun test`.
+Run and pass, in order: `bun run typecheck`, `bun run lint`, `bun test`, `bun run harness-check`.
 Then answer in your report: did this change make any doc or template stale (fix in the same change); did I hit harness friction (log in [`docs/harness/friction.md`](./docs/harness/friction.md)); what did I not attempt (say so).
 
 ## Working notes

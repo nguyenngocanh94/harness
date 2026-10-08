@@ -24,10 +24,10 @@ The harness is assessed along seven pillars. Onboarding co-builds a **thin defau
 | Knowledge in repo | Orientation lives in the repo, not in chat | Filled `AGENTS.md`, a reading map pointing only at docs that exist, feature docs | A new agent can name the change surface and proof command without reading the whole repo or asking for facts already present. |
 | Mechanical enforcement | Machines, not memory, hold the line | One runnable `verify` chaining the definition of done; heavier CI/rules risk-adjusted | `verify` passes from a clean checkout and every non-negotiable control in the risk profile has a mechanical owner or an explicit blocking plan. |
 | Runtime legibility | The running system can be observed and reproduced | A short note: where logs go, how to reproduce a bug, what state matters | A developer can reproduce one representative failure and identify the evidence needed to explain it without exposing secrets or sensitive data. |
-| Entropy control | Docs and rules stay lean; cruft is deleted | Friction log + "docs earn their existence, deleted when premature" + a periodic `/harness-review` prune | Review cadence and owner are named; open friction is counted and stale routing entries are detectable. |
+| Entropy control | Docs and rules stay lean; cruft is deleted | Friction log with budgets + "docs earn their existence, deleted when premature" + a periodic `/harness-review` (sweep → pattern pass → distil/archive → prune) | Review cadence and owner are named; open friction, live-log size, over-budget feature docs, and dangling reading-map lines are counted by the recipe in the review workflow. |
 | Merge philosophy | How a change earns its way in | Branch-per-task, evidence carried, DoD stands in until CI exists | The actual merge path names required evidence and does not rely on a process the team will not follow. |
 | Human role | Where human judgment is mandatory | Hard gates (generic four + domain gates from the interview) | Each irreversible, externally binding, money-moving, privacy, security, or compliance boundary has a recognizable stop condition and decision owner. |
-| Feedback loop | The harness learns from its own friction | Friction log with prediction → outcome; `/harness-review` closes/escalates open entries on a cadence; kit-template friction ports upstream | A prediction can be traced to an observed outcome, and repeated friction has a defined escalation path. |
+| Feedback loop | The harness learns from its own friction | Friction log with prediction → outcome; `/harness-review` closes open entries, promotes repeated themes to rules, and archives closed entries on a cadence; kit-template friction ports upstream | A prediction can be traced to an observed outcome, repeated friction has a defined escalation path, and every archived entry names the rule that now holds its learning. |
 
 A pillar left thin is not a gap to hide — its thin state and the path to thicken it are recorded at onboarding. Thickening is co-built, never auto-generated.
 
@@ -46,9 +46,9 @@ A pillar left thin is not a gap to hide — its thin state and the path to thick
 | Feature docs (invariants, verify-as-command) | `docs/features/_template.md` | installed |
 | Feature-start workflow (intake → gate check → doc → done) | `.claude/commands/feature.md` | installed; optional to use |
 | Pillar thickening workflow | `.claude/commands/harness-pillar.md` | installed; run when a thin layer needs to grow |
-| Maintenance workflow (friction sweep + docs prune) | `.claude/commands/harness-review.md` | installed; run per release or when open friction entries > ~5 |
+| Maintenance workflow (friction sweep → pattern pass → distil/archive → docs prune) | `.claude/commands/harness-review.md` | installed; run per release or when a budget in the review workflow is crossed |
 | Design records | `docs/plans/` | convention installed |
-| Friction log (prediction → outcome) | `docs/harness/friction.md` | installed |
+| Friction log (prediction → outcome, archive of distilled entries) | `docs/harness/friction.md` | installed |
 | Risk profile + non-negotiable baselines | `docs/harness/risk-profile.md` | TODO(harness): classified and confirmed at onboarding |
 | Definition-of-done runner (thin enforcement) | a `verify` entry point | TODO(harness): wired at onboarding (Stage B, pillar 3) |
 | Mechanical enforcement (CI, lint, architecture rules) | — | thin layer at onboarding; thicken via `/harness-pillar` |

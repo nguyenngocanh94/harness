@@ -1,12 +1,13 @@
 {
   "name": "harness-kit",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "lint": "biome check ."
+    "lint": "biome check .",
+    "harness-check": "sh scripts/harness-check.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",

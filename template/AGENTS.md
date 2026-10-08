@@ -23,7 +23,7 @@ Repeatable procedures live as workflow docs any agent can follow (in Claude Code
 - Onboard this repo onto the harness → `docs/harness/workflows/onboard.md` (`/harness-onboard`)
 - Start a feature → `docs/harness/workflows/feature.md` (`/feature`)
 - Thicken one harness pillar → `docs/harness/workflows/pillar.md` (`/harness-pillar`)
-- Maintain the harness (friction sweep + docs prune) → `docs/harness/workflows/review.md` (`/harness-review`)
+- Maintain the harness (friction sweep, pattern pass, distil/archive, docs prune) → `docs/harness/workflows/review.md` (`/harness-review`)
 
 ## Conventions
 

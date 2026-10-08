@@ -107,8 +107,8 @@ Co-write a short legibility note with the human: where logs go, how to reproduce
 
 ### B5 — Entropy control (mostly agree, little to build)
 
-Confirm the team accepts the seeded rules: the append-only friction protocol and "docs must earn their existence, deleted when premature." Adjust wording only if their reality differs.
-Set the review cadence: the `/harness-review` ritual (friction sweep + docs prune) runs at each release, or when open friction entries exceed ~5 — whichever comes first. Agree on which trigger fits this team.
+Confirm the team accepts the seeded rules: the friction protocol (live entries append-only, closed entries archived to one line by review) and "docs must earn their existence, deleted when premature." Adjust wording only if their reality differs.
+Set the review cadence and budgets: the `/harness-review` ritual (friction sweep → pattern pass → distil/archive → docs prune) runs at each release, or when a budget is crossed — open entries > 5, live log > ~120 lines, a feature doc > 60 lines. Agree on which trigger and which numbers fit this team; record any change in the review workflow's budget table.
 
 ### B6 — Merge philosophy (confirm it matches reality)
 
