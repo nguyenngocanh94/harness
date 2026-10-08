@@ -24,6 +24,8 @@ Repeatable procedures live as workflow docs any agent can follow (in Claude Code
 - Start a feature → `docs/harness/workflows/feature.md` (`/feature`)
 - Thicken one harness pillar → `docs/harness/workflows/pillar.md` (`/harness-pillar`)
 - Maintain the harness (friction sweep, pattern pass, distil/archive, docs prune) → `docs/harness/workflows/review.md` (`/harness-review`)
+- Measure one open harness bet → `docs/harness/workflows/probe.md` (`/harness-probe`)
+- Merge kit changes after re-running init → `docs/harness/workflows/upgrade.md` (`/harness-upgrade`)
 
 ## Conventions
 
@@ -69,7 +71,7 @@ Then answer three questions in your report:
 ## How work merges
 
 - One task, one branch, small batches — a change that can be verified end-to-end beats a large one that cannot.
-- Every merge carries its evidence: the verification output and the three self-check answers above.
+- Every merge carries its evidence: the block in [`docs/harness/merge-evidence.md`](./docs/harness/merge-evidence.md) — verification output, gates and risk rows touched, the three self-check answers.
 - Until CI exists, the definition of done stands in for it; once CI exists, green is a hard merge requirement.
 - Human review concentrates where machines cannot judge: hard-gate territory, design decisions, and the report — not every generated line.
 - Throughput comes from small batches, never from skipping checks.
@@ -77,4 +79,5 @@ Then answer three questions in your report:
 ## Working notes
 
 - When the harness itself fails you — a missing rule, a stale doc, wasted reading, a guardrail that should have caught your mistake — append an entry to [`docs/harness/friction.md`](./docs/harness/friction.md) (format inside). Harness changes get a prediction there; close entries with observed outcomes.
-- TODO(harness): repo-specific working notes (how to reproduce bugs end-to-end, flakiness policy).
+- Runtime questions — where logs go, what state matters, how to reproduce a bug — are answered in [`docs/harness/legibility.md`](./docs/harness/legibility.md), not here.
+- TODO(harness): repo-specific working notes (flakiness policy, environment quirks).

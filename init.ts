@@ -15,7 +15,7 @@
  *     CLAUDE.md, so Claude Code — which ignores AGENTS.md — reads the manual.
  *   Migration: a repo onboarded by an older kit has a real CLAUDE.md manual
  *   and no AGENTS.md; init leaves CLAUDE.md untouched, drops
- *   AGENTS.md.harness-kit as a merge source, and lets the onboarding workflow
+ *   AGENTS.md.harness-kit as a merge source, and lets the upgrade workflow
  *   move the content. Never overwrites anything.
  * Idempotent: re-running heals interrupted runs and applies kit updates.
  */
@@ -189,7 +189,9 @@ function printReport(report: InitReport, target: string): void {
     console.log(`  skipped  ${file} (exists — untouched)`);
   }
   for (const file of report.references) {
-    console.log(`  ref      ${file} (merge source for onboarding)`);
+    console.log(
+      `  ref      ${file} (kit changed it — merge via /harness-upgrade)`,
+    );
   }
   if (report.bridge) {
     console.log(`  bridge   CLAUDE.md → AGENTS.md (${report.bridge})`);
@@ -203,12 +205,22 @@ function printReport(report: InitReport, target: string): void {
     );
   }
   console.log("");
+  if (report.references.length > 0) {
+    console.log(
+      "References were dropped beside files the kit changed. Run the upgrade",
+    );
+    console.log(
+      "workflow (/harness-upgrade) to merge them before continuing; the kit's",
+    );
+    console.log("CHANGELOG.md lists what moved between the two versions.");
+    console.log("");
+  }
   if (report.migrationPending) {
     console.log(
       "Existing CLAUDE.md found with no AGENTS.md — a migration is pending.",
     );
     console.log(
-      "Run the onboarding workflow (/harness-onboard): it moves CLAUDE.md into",
+      "Run the upgrade workflow (/harness-upgrade): it moves CLAUDE.md into",
     );
     console.log("AGENTS.md and installs the bridge.");
   } else {

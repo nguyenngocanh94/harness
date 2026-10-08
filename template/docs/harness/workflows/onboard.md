@@ -68,15 +68,7 @@ The labels guide the conversation; they are not compliance certification. For ev
 
 Go through the pillars in order. For each: **explain what it is → discuss what this repo needs → build the thinnest working version → verify → record.** The human confirms every decision; nothing is wired silently. Fill the matching `TODO(harness)` slots as you go.
 
-**Merge existing manuals.** If `AGENTS.md.harness-kit` or `HARNESS.md.harness-kit` exist, the repo had its own versions: merge the reference copy's harness sections into the existing file — preserve the repo's own content, don't duplicate overlapping guidance — then delete the `.harness-kit` file.
-
-**Merge updated workflow bodies.** If `docs/harness/workflows/<name>.md.harness-kit` exists, the published tool-neutral workflow changed since this repo adapted its copy. Review and merge the reference into the existing workflow, preserving deliberate repo-specific guidance, then delete the reference. Never leave the reference unreviewed: command wrappers dispatch to the existing workflow body, so an old body silently keeps old behavior.
-
-**Migrate an old CLAUDE.md-only repo.** If this repo was onboarded by an older kit it has a filled `CLAUDE.md` and no `AGENTS.md` (init left `AGENTS.md.harness-kit` beside it). Move the repo's `CLAUDE.md` content into `AGENTS.md` (merging the template structure from `AGENTS.md.harness-kit`), then replace `CLAUDE.md` with a one-line bridge whose sole content is `@AGENTS.md`, and delete `AGENTS.md.harness-kit`. AGENTS.md is now the single source of truth; the bridge keeps Claude Code working.
-
-**Replace stale command wrappers.** If any `.claude/commands/<name>.md.harness-kit` exists, the repo's command file differs from the current kit's wrapper. Command wrappers are kit-owned dispatch shims: their only job is to point at the matching `docs/harness/workflows/` body. An old-kit command file carries an entire obsolete workflow inline and must not survive — it silently shadows the current workflow doc. Replace the command file's content with the reference copy's, confirm with the human before discarding anything they deliberately added to the wrapper (repo-specific additions belong in the workflow doc or AGENTS.md, not the shim), then delete the `.harness-kit` file.
-
-**Merge other updated template files.** Any other `<name>.harness-kit` (for example `docs/harness/friction.md.harness-kit`, `docs/harness/risk-profile.md.harness-kit`, `docs/features/_template.md.harness-kit`) means the kit changed that file's protocol or template since this repo adapted its copy. Merge the protocol change into the repo's file — never its content: a friction log keeps every entry, a risk profile keeps every classification — then delete the reference. Confirm with the human when a protocol change alters how existing entries are read.
+**References first.** If `init` dropped any `<name>.harness-kit` file (an existing manual, workflow body, wrapper, log, or template that differs from the kit's current one — including a `CLAUDE.md`-only repo awaiting migration), run the upgrade workflow (`docs/harness/workflows/upgrade.md`, `/harness-upgrade`) before Stage B. Onboarding assumes the skeleton is current.
 
 ### B1 — Knowledge in repo (spend the most time here)
 
@@ -99,13 +91,13 @@ Cross-check every gate against `docs/harness/risk-profile.md`: every non-negotia
 
 ### B3 — Mechanical enforcement (thin: the verify runner)
 
-The one genuinely new build. Wire the definition-of-done commands into **one runnable `verify` entry point** (a package script, Makefile target, or shell script — whatever fits the stack) that runs typecheck → lint → test in order. Run it; it must pass. "Done" is now a command, not a paragraph — record it in AGENTS.md's Verification section.
+The one genuinely new build. Wire the definition-of-done commands into **one runnable `verify` entry point** (a package script, Makefile target, or shell script — whatever fits the stack) that runs typecheck → lint → test in order; `docs/harness/examples/verify.md` has the shape per stack plus a warning hook and a minimal CI job for later. Run it; it must pass, and a deliberately broken test must make it fail. "Done" is now a command, not a paragraph — record it in AGENTS.md's Verification section.
 If a step isn't wired in this repo, say so explicitly and leave it out of `verify` rather than faking it; note the gap for the pillar-thickening workflow.
 Do **not** create CI pipelines or dependency/architecture rules here unless the confirmed risk profile makes them prerequisites — otherwise those are thickening. When you note the gap, record the stack-appropriate suggestion for later: TS/JS → Biome + dependency-cruiser; PHP → PHPStan + Deptrac; Go → golangci-lint + depguard; Kotlin → detekt + Konsist; Rust → clippy + cargo-deny; Python → ruff + import-linter.
 
 ### B4 — Runtime legibility (thin: a note, not infra)
 
-Co-write a short legibility note with the human: where logs go, how to reproduce a bug end-to-end, what runtime state matters. Docs, not tooling — the thinnest honest version. Greenfield: a stub listing the open questions. Observability infrastructure is pillar-thickening work.
+Fill `docs/harness/legibility.md` with the human: where logs go, what runtime state matters, how to reproduce a bug end-to-end, and one representative failure walked through once. Docs, not tooling — the thinnest honest version; a slot you cannot fill stays `TODO(harness)` with an owner. Greenfield: the open questions, named. Observability infrastructure is pillar-thickening work.
 
 ### B5 — Entropy control (mostly agree, little to build)
 
@@ -115,10 +107,11 @@ Set the review cadence and budgets: the `/harness-review` ritual (friction sweep
 ### B6 — Merge philosophy (confirm it matches reality)
 
 The merge section ships in AGENTS.md prose. Confirm it matches how the team actually merges (branch-per-task, evidence carried, DoD stands in for CI until CI exists). Adapt wording to their reality; do not impose a process they will not follow.
+Give the evidence a place: `docs/harness/merge-evidence.md` holds the block every merge carries. Agree where it is pasted (forge PR template, or the merge commit) and wire that adapter now if the team uses a forge — it is a copy, not a build.
 
 ### B7 — Feedback loop (confirm understanding)
 
-Confirm the human understands: friction entries close with observed outcomes, harness changes carry a prediction, and friction about the kit's own templates ports back upstream. The four generic bets in HARNESS.md are seeded. Open entries do not rot — the `/harness-review` ritual (cadence set in B5) closes or escalates them.
+Confirm the human understands: friction entries close with observed outcomes, harness changes carry a prediction, and friction about the kit's own templates ports back upstream. The four generic bets in HARNESS.md are seeded; they gain evidence only through probes (`docs/harness/workflows/probe.md`, `/harness-probe`) — agree who runs the first one and when (default: before the second release). Open entries do not rot — the `/harness-review` ritual (cadence set in B5) closes or escalates them.
 
 ---
 

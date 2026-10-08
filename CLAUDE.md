@@ -9,7 +9,7 @@ Design records: [`docs/plans/2026-07-05-harness-kit-design.md`](./docs/plans/202
 
 - `init.ts`'s contract is an invariant: create-if-missing, never overwrite, never merge. The only writes beyond create-if-missing are: the `docs/harness/kit-version` stamp (always rewritten); `<name>.harness-kit` reference copies (created once beside any existing template file that differs from the kit's current template — manuals, workflow bodies, command wrappers, logs, templates alike; see `docs/plans/2026-10-08-reference-copies-for-all-template-files.md`); and the `CLAUDE.md` bridge to `AGENTS.md` (symlink, or `@AGENTS.md` shim), created only when the target has no `CLAUDE.md`. Changing this contract requires a decision record in `docs/plans/`.
 - `onboard.ts` is bootstrap-only: ensure the cache clone is fresh, then delegate to the cached `init.ts`. It never touches the target itself. `DEFAULT_REPO` points at the published repo (github.com/nguyenngocanh94/harness); overrides via `HARNESS_KIT_REPO` or `--repo`.
-- Any change to `template/` bumps `VERSION` in the same commit.
+- Any change to `template/` bumps `VERSION` and adds a `CHANGELOG.md` entry in the same commit; the upgrade workflow in onboarded repos reads that entry to merge intent, not just text.
 - Template text must stay generic: project-specific facts belong in `TODO(harness)` slots, never hardcoded.
 - Docs record intent; anything a command can answer is never written into a doc — run the command.
 
