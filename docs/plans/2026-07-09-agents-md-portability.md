@@ -61,3 +61,11 @@ This adds a migration-aware branch to `init.ts`, which is why it crosses the nev
 ## Prediction (close in the friction log once implemented)
 
 After this change, onboarding a repo and opening it in a non-Claude tool (Codex or Cursor) surfaces the harness manual and lets the agent run the onboarding/feature workflows — measured by: the manual loads without a Claude-specific file, and at least one workflow runs end-to-end in a second tool.
+
+## Addendum 2026-10-08 — first per-tool adapter: Codex skills
+
+Phase 2 said "add a specific adapter only when a target tool proves it needs one". Codex proved it: opening an onboarded repo in Codex, `AGENTS.md` loads and the workflow bodies are followable on request, but `/harness-onboard` does not exist — Codex never reads `.claude/commands/`, and its own custom-prompt mechanism was removed in v0.117.0 (March 2026) in favour of repo-level **skills** at `.agents/skills/<name>/SKILL.md`, invoked as `$name`.
+
+Decision: ship six skills mirroring the six Claude Code commands one-to-one (same names, same one-line dispatch to the workflow body). The pattern for any further tool stays the same: one thin shim per workflow in that tool's native location, never a second copy of the body. `template.test.ts` enforces that the Claude and Codex shim sets carry identical names. No `init.ts` change — the generic walker already copies the new directory under create-if-missing. VERSION → 0.8.0.
+
+The portability prediction (manual loads and one workflow runs end-to-end in a second tool) is still open; the Codex skill is the instrument to close it.

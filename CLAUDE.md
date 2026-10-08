@@ -1,7 +1,7 @@
 ## What harness-kit is
 
 A template + CLI that onboards other repositories onto the harness patterns from the signalv2 experiment.
-Two parts: `init.ts` (deterministic skeleton copier) and the onboarding workflow `template/docs/harness/workflows/onboard.md` (the agent adaptation step that runs inside targets; `template/.claude/commands/*.md` are thin Claude Code wrappers over the workflow bodies).
+Two parts: `init.ts` (deterministic skeleton copier) and the onboarding workflow `template/docs/harness/workflows/onboard.md` (the agent adaptation step that runs inside targets; `template/.claude/commands/*.md` and `template/.agents/skills/*/SKILL.md` are thin Claude Code / Codex wrappers over the workflow bodies; the two sets share names and must stay in step).
 The canonical operating manual is `AGENTS.md` (read by every AGENTS.md-aware tool); a `CLAUDE.md` bridge points Claude Code at it.
 Design records: [`docs/plans/2026-07-05-harness-kit-design.md`](./docs/plans/2026-07-05-harness-kit-design.md) (the split), [`docs/plans/2026-07-09-cobuild-onboarding.md`](./docs/plans/2026-07-09-cobuild-onboarding.md) (co-build model), [`docs/plans/2026-07-09-agents-md-portability.md`](./docs/plans/2026-07-09-agents-md-portability.md) (cross-tool).
 

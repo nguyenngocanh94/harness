@@ -68,7 +68,7 @@ The labels guide the conversation; they are not compliance certification. For ev
 
 Go through the pillars in order. For each: **explain what it is → discuss what this repo needs → build the thinnest working version → verify → record.** The human confirms every decision; nothing is wired silently. Fill the matching `TODO(harness)` slots as you go.
 
-**References first.** If `init` dropped any `<name>.harness-kit` file (an existing manual, workflow body, wrapper, log, or template that differs from the kit's current one — including a `CLAUDE.md`-only repo awaiting migration), run the upgrade workflow (`docs/harness/workflows/upgrade.md`, `/harness-upgrade`) before Stage B. Onboarding assumes the skeleton is current.
+**References first.** If `init` dropped any `<name>.harness-kit` file (an existing manual, workflow body, wrapper, log, or template that differs from the kit's current one — including a `CLAUDE.md`-only repo awaiting migration), run the upgrade workflow (`docs/harness/workflows/upgrade.md` — `/harness-upgrade` in Claude Code, `$harness-upgrade` in Codex) before Stage B. Onboarding assumes the skeleton is current.
 
 ### B1 — Knowledge in repo (spend the most time here)
 

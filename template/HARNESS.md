@@ -39,16 +39,17 @@ A pillar left thin is not a gap to hide — its thin state and the path to thick
 | --- | --- | --- |
 | Thin operating manual | `AGENTS.md` | installed by kit; adapted at onboarding |
 | Cross-tool bridge | `CLAUDE.md` → `AGENTS.md` (symlink/shim) | installed by init so Claude Code reads the manual |
+| Workflow entry points per tool | `.claude/commands/<name>.md` (Claude Code `/name`), `.agents/skills/<name>/SKILL.md` (Codex `$name`) | installed; thin dispatch shims over the workflow bodies below |
 | Task→reading map + stop rule | `AGENTS.md` | TODO(harness): entries filled at onboarding |
 | Hard gates | `AGENTS.md` | generic four installed; domain gates from the onboarding interview |
 | Definition of done + self-check | `AGENTS.md` | TODO(harness): commands wired at onboarding |
 | Merge philosophy | `AGENTS.md` | installed |
 | Feature docs (invariants, verify-as-command) | `docs/features/_template.md` | installed |
-| Feature-start workflow (intake → gate check → doc → done) | `.claude/commands/feature.md` | installed; optional to use |
-| Pillar thickening workflow | `.claude/commands/harness-pillar.md` | installed; run when a thin layer needs to grow |
-| Maintenance workflow (friction sweep → pattern pass → distil/archive → docs prune) | `.claude/commands/harness-review.md` | installed; run per release or when a budget in the review workflow is crossed |
-| Probe workflow (measure one open bet) | `.claude/commands/harness-probe.md` | installed; run before the second release, then whenever a release passes with no bet gaining evidence |
-| Upgrade workflow (merge `*.harness-kit` references after re-running init) | `.claude/commands/harness-upgrade.md` | installed; run whenever init reports a `ref` line |
+| Feature-start workflow (intake → gate check → doc → done) | `docs/harness/workflows/feature.md` | installed; optional to use |
+| Pillar thickening workflow | `docs/harness/workflows/pillar.md` | installed; run when a thin layer needs to grow |
+| Maintenance workflow (friction sweep → pattern pass → distil/archive → docs prune) | `docs/harness/workflows/review.md` | installed; run per release or when a budget in the review workflow is crossed |
+| Probe workflow (measure one open bet) | `docs/harness/workflows/probe.md` | installed; run before the second release, then whenever a release passes with no bet gaining evidence |
+| Upgrade workflow (merge `*.harness-kit` references after re-running init) | `docs/harness/workflows/upgrade.md` | installed; run whenever init reports a `ref` line |
 | Design records | `docs/plans/` | convention installed |
 | Friction log (prediction → outcome, archive of distilled entries) | `docs/harness/friction.md` | installed |
 | Risk profile + non-negotiable baselines | `docs/harness/risk-profile.md` | TODO(harness): classified and confirmed at onboarding |

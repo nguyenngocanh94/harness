@@ -3,8 +3,8 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 // The template must stay consistent with itself: every path a template doc
-// points at exists in the template, every workflow has its wrapper and its
-// AGENTS.md line, and the kit's version is stamped in one place. These are
+// points at exists in the template, every workflow has a wrapper per tool and
+// its AGENTS.md line, and the kit's version is stamped in one place. These are
 // the staleness classes the kit's own friction log has recorded.
 
 const KIT = import.meta.dir;
@@ -24,10 +24,15 @@ const templateFiles = walk(TEMPLATE).map((f) => relative(TEMPLATE, f));
 const markdown = templateFiles.filter((f) => f.endsWith(".md"));
 const read = (rel: string) => readFileSync(join(TEMPLATE, rel), "utf8");
 
-// A concrete template-relative path: docs/… or .claude/… ending in .md, with
-// no placeholder segment (<name>, *, <date>, …).
+// A concrete template-relative path: docs/…, .claude/… or .agents/… ending in
+// .md, with no placeholder segment (<name>, *, <date>, …).
 const PATH_RE =
-  /(?:^|[^A-Za-z0-9_./-])((?:docs|\.claude)\/[A-Za-z0-9_./-]+\.md)/g;
+  /(?:^|[^A-Za-z0-9_./-])((?:docs|\.claude|\.agents)\/[A-Za-z0-9_./-]+\.md)/g;
+
+// Per-tool entry points: Claude Code slash commands and Codex skills. Each is a
+// thin shim that dispatches to one workflow body.
+const WRAPPER_DIRS = [".claude/commands/", ".agents/skills/"];
+const isWrapper = (f: string) => WRAPPER_DIRS.some((d) => f.startsWith(d));
 
 describe("template self-consistency", () => {
   test("every concrete doc path mentioned in the template exists", () => {
@@ -49,25 +54,42 @@ describe("template self-consistency", () => {
     expect(missing).toEqual([]);
   });
 
-  test("every workflow body has a wrapper that dispatches to it and a line in AGENTS.md", () => {
+  test("every workflow body has a wrapper per tool that dispatches to it and a line in AGENTS.md", () => {
     const workflows = templateFiles.filter((f) =>
       f.startsWith("docs/harness/workflows/"),
     );
     expect(workflows.length).toBeGreaterThan(0);
     const agents = read("AGENTS.md");
-    const wrappers = templateFiles
+    for (const dir of WRAPPER_DIRS) {
+      const wrappers = templateFiles
+        .filter((f) => f.startsWith(dir))
+        .map((f) => read(f));
+      for (const wf of workflows) {
+        expect(agents).toContain(wf);
+        expect(wrappers.some((w) => w.includes(wf))).toBe(true);
+      }
+    }
+  });
+
+  test("Claude Code and Codex wrappers carry the same workflow names", () => {
+    const commands = templateFiles
       .filter((f) => f.startsWith(".claude/commands/"))
-      .map((f) => read(f));
-    for (const wf of workflows) {
-      expect(agents).toContain(wf);
-      expect(wrappers.some((w) => w.includes(wf))).toBe(true);
+      .map((f) => f.slice(".claude/commands/".length, -".md".length))
+      .sort();
+    const skills = templateFiles
+      .filter((f) => f.startsWith(".agents/skills/") && f.endsWith("/SKILL.md"))
+      .map((f) => f.split("/")[2])
+      .sort();
+    expect(skills).toEqual(commands);
+    for (const name of skills) {
+      expect(read(`.agents/skills/${name}/SKILL.md`)).toContain(
+        `name: ${name}`,
+      );
     }
   });
 
   test("every wrapper only dispatches — no inlined workflow", () => {
-    for (const f of templateFiles.filter((f) =>
-      f.startsWith(".claude/commands/"),
-    )) {
+    for (const f of templateFiles.filter(isWrapper)) {
       const body = read(f).split("---").at(-1) ?? "";
       expect(body.trim().split("\n").length).toBeLessThanOrEqual(2);
       expect(body).toContain("docs/harness/workflows/");
@@ -79,7 +101,7 @@ describe("template self-consistency", () => {
     for (const line of read("HARNESS.md").split("\n")) {
       if (!line.startsWith("| ")) continue;
       for (const m of line.matchAll(
-        /`((?:docs|\.claude)\/[A-Za-z0-9_./-]+\.md)`/g,
+        /`((?:docs|\.claude|\.agents)\/[A-Za-z0-9_./-]+\.md)`/g,
       )) {
         const p = m[1] ?? "";
         if (!existsSync(join(TEMPLATE, p))) missing.push(p);

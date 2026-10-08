@@ -18,7 +18,7 @@ Stop reading when you can name the files you will change and the command that pr
 
 ## Workflows
 
-Repeatable procedures live as workflow docs any agent can follow (in Claude Code they are also slash commands):
+Repeatable procedures live as workflow docs any agent can follow. Each has a thin per-tool entry point under the same name: a Claude Code slash command (`/name`, in `.claude/commands/`) and a Codex skill (`$name`, in `.agents/skills/`). Any other tool: ask it to read the workflow file and follow it.
 
 - Onboard this repo onto the harness → `docs/harness/workflows/onboard.md` (`/harness-onboard`)
 - Start a feature → `docs/harness/workflows/feature.md` (`/feature`)

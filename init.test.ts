@@ -56,6 +56,12 @@ const EXPECTED_FILES = [
   ".claude/commands/harness-review.md",
   ".claude/commands/harness-probe.md",
   ".claude/commands/harness-upgrade.md",
+  ".agents/skills/harness-onboard/SKILL.md",
+  ".agents/skills/feature/SKILL.md",
+  ".agents/skills/harness-pillar/SKILL.md",
+  ".agents/skills/harness-review/SKILL.md",
+  ".agents/skills/harness-probe/SKILL.md",
+  ".agents/skills/harness-upgrade/SKILL.md",
 ];
 
 describe("runInit", () => {

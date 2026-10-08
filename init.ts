@@ -228,7 +228,10 @@ function printReport(report: InitReport, target: string): void {
       "Skeleton landed — the repo is NOT onboarded yet. Next: open it in your",
     );
     console.log(
-      "agent tool and run the onboarding workflow (/harness-onboard).",
+      "agent tool and run the onboarding workflow (/harness-onboard in Claude",
+    );
+    console.log(
+      "Code, $harness-onboard in Codex, or follow docs/harness/workflows/onboard.md).",
     );
   }
 }

@@ -51,9 +51,10 @@ Overrides: `--repo=<git-url>` or `HARNESS_KIT_REPO` (fork/mirror), `--ref=<branc
 | `docs/harness/examples/verify.md` | the `verify` entry point by stack, a warning hook, a minimal CI job — examples, not mechanisms |
 | `docs/harness/workflows/{onboard,feature,pillar,review,probe,upgrade}.md` | tool-neutral workflow bodies — the single source any agent follows |
 | `.claude/commands/{harness-onboard,feature,harness-pillar,harness-review,harness-probe,harness-upgrade}.md` | thin Claude Code entry points that delegate to the workflow bodies |
+| `.agents/skills/{harness-onboard,feature,harness-pillar,harness-review,harness-probe,harness-upgrade}/SKILL.md` | thin Codex skill entry points (`$harness-onboard`, …) that delegate to the same workflow bodies |
 | `docs/harness/kit-version` | stamp for update tracking (the only file init ever rewrites) |
 
-If any template file already exists, init leaves it untouched and drops a `<name>.harness-kit` reference copy next to it when the published template differs. The upgrade workflow (`/harness-upgrade`) walks those references: manuals and workflow bodies are merged, `.claude/commands/*.md` wrappers are *replaced* (kit-owned dispatch shims — an old-kit wrapper can shadow the current workflow body), logs and templates take the structural change only. A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and the upgrade workflow moves the content into `AGENTS.md` and installs the bridge.
+If any template file already exists, init leaves it untouched and drops a `<name>.harness-kit` reference copy next to it when the published template differs. The upgrade workflow (`/harness-upgrade`) walks those references: manuals and workflow bodies are merged, `.claude/commands/*.md` and `.agents/skills/*/SKILL.md` wrappers are *replaced* (kit-owned dispatch shims — an old-kit wrapper can shadow the current workflow body), logs and templates take the structural change only. A repo onboarded by an older kit (a real `CLAUDE.md`, no `AGENTS.md`) is detected as a migration: init leaves `CLAUDE.md` alone, drops `AGENTS.md.harness-kit`, and the upgrade workflow moves the content into `AGENTS.md` and installs the bridge.
 
 ## Updating an onboarded repo
 

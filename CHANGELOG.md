@@ -2,6 +2,13 @@
 
 Read this when `/harness-upgrade` has references to merge: find the span between the repo's previous `docs/harness/kit-version` and the current one, and merge *these* intents. Every change to `template/` adds an entry here in the same commit (kit convention).
 
+## 0.8.0 — 2026-10-08
+
+- New `.agents/skills/<name>/SKILL.md` for all six workflows: Codex entry points (`$harness-onboard`, `$feature`, `$harness-pillar`, `$harness-review`, `$harness-probe`, `$harness-upgrade`), same names as the Claude Code commands, same one-line dispatch to `docs/harness/workflows/<name>.md`. Treat them like `.claude/commands/*.md` on upgrade: kit-owned shims, replace with the reference.
+- `AGENTS.md` Workflows section names both entry points and tells any other tool to read the workflow file directly.
+- `HARNESS.md` mechanism table: workflow rows now point at the tool-neutral bodies under `docs/harness/workflows/`, not at `.claude/commands/`; new "Workflow entry points per tool" row.
+- Upgrade workflow lists `.agents/skills/*/SKILL.md` beside `.claude/commands/*.md` as replace-not-merge shims; onboarding names both entry points.
+
 ## 0.7.0 — 2026-10-08
 
 - New `docs/harness/legibility.md`: runtime-legibility skeleton (logs, state, reproduction, one walked-through failure). Onboarding B4 fills it.
